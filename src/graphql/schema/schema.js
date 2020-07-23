@@ -1,4 +1,6 @@
-export default `
+import { buildSchema } from "graphql";
+
+export default buildSchema(`
 scalar Date
 scalar DateTime
 
@@ -313,7 +315,7 @@ type Other implements AnimalAd & Ad & Node{
 }
 
   type Query {
-    protectoras: [Protectora!]!
+    getAllProtectoras: [Protectora!]!
     animalsAds: [AnimalAd]
     servicesAds: [ServiceAd]
     productsAds: [ProductAd]
@@ -325,4 +327,10 @@ type Other implements AnimalAd & Ad & Node{
       
   }
 
-`;
+  schema {
+    query: Query
+    mutation: Mutation
+}
+
+
+`);
