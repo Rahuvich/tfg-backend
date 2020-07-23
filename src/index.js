@@ -3,17 +3,25 @@ import app from "../config/server";
 import express from "express";
 
 import { graphqlHTTP } from "express-graphql";
-import graphQlSchema from "./graphql/schema/schema";
+import typeDefs from "./graphql/schema/schema";
 import graphQlResolvers from "./graphql/resolvers/resolvers";
+import { makeExecutableSchema } from "graphql-tools";
+import isAuth from "../middleware/is_auth";
 
 app.use(express.json());
+
+const schema = makeExecutableSchema({
+  typeDefs: typeDefs,
+  resolvers: graphQlResolvers,
+});
+
+app.use(isAuth);
 
 // Routes
 app.use(
   "/graphql",
   graphqlHTTP({
-    schema: graphQlSchema,
-    resolvers: graphQlResolvers,
+    schema: schema,
     graphiql: true,
   })
 );

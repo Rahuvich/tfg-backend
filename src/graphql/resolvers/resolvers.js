@@ -1,6 +1,10 @@
 // * Import resolvers
 import userResolver from "./users";
+import typesResolver from "./types";
 
-export default {
+const rootResolver = {
   ...userResolver,
+  ...typesResolver,
 };
+
+module.exports = rootResolver;

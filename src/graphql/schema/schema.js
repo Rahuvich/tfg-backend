@@ -1,6 +1,4 @@
-import { buildSchema } from "graphql";
-
-export default buildSchema(`
+const typeDefs = `
 scalar Date
 scalar DateTime
 
@@ -36,6 +34,12 @@ enum DeliveryStatus {
     PROTECTORA
   }
 
+  type AuthData {
+    userId: ID!
+    token: String!
+    tokenExpiration: Int!
+  }
+
   input UserInput {
     type: UserType!
     name: String!
@@ -49,6 +53,7 @@ enum DeliveryStatus {
     _id: ID!
 
     name: String!
+    email: String!
     address: String!
     phone: Int!
     thumbnail: String
@@ -59,6 +64,7 @@ enum DeliveryStatus {
     _id: ID!
 
     name: String!
+    email: String!
     address: String!
     phone: Int!
     thumbnail: String
@@ -71,6 +77,7 @@ enum DeliveryStatus {
     _id: ID!
     
     name: String!
+    email: String!
     address: String!
     phone: Int!
     thumbnail: String
@@ -83,6 +90,7 @@ enum DeliveryStatus {
     _id: ID!
     
     name: String!
+    email: String!
     address: String!
     phone: Int!
     thumbnail: String
@@ -315,11 +323,12 @@ type Other implements AnimalAd & Ad & Node{
 }
 
   type Query {
+    helloWorld: String!
+    login(email: String!, password: String!): AuthData!
     getAllProtectoras: [Protectora!]!
     animalsAds: [AnimalAd]
     servicesAds: [ServiceAd]
     productsAds: [ProductAd]
-    user(_id: ID!):User
   }
 
   type Mutation{
@@ -327,10 +336,7 @@ type Other implements AnimalAd & Ad & Node{
       
   }
 
-  schema {
-    query: Query
-    mutation: Mutation
-}
 
 
-`);
+`;
+module.exports = typeDefs;
