@@ -18,9 +18,7 @@ const ProfesionalSchema = extendSchema(UserSchema, {
   web: String,
 });
 
-const ParticularSchema = extendSchema(UserSchema, {
-  web: String,
-});
+const ParticularSchema = extendSchema(UserSchema, {});
 
 export const Protectoras = mongoose.model("protectoras", ProtectoraSchema);
 

@@ -34,6 +34,15 @@ enum DeliveryStatus {
     PROTECTORA
   }
 
+  input UserInput {
+    type: UserType!
+    name: String!
+    address: String!
+    phone: Int!
+    email: String!
+    password: String!
+  }
+
   interface User implements Node{
     _id: ID!
 
@@ -41,6 +50,7 @@ enum DeliveryStatus {
     address: String!
     phone: Int!
     thumbnail: String
+    password: String
   }
 
   type Protectora implements User & Node{
@@ -50,6 +60,7 @@ enum DeliveryStatus {
     address: String!
     phone: Int!
     thumbnail: String
+    password: String
 
     web: String
   }
@@ -61,6 +72,7 @@ enum DeliveryStatus {
     address: String!
     phone: Int!
     thumbnail: String
+    password: String
 
     web: String
   }
@@ -72,6 +84,7 @@ enum DeliveryStatus {
     address: String!
     phone: Int!
     thumbnail: String
+    password: String
 
   }
 
@@ -308,7 +321,8 @@ type Other implements AnimalAd & Ad & Node{
   }
 
   type Mutation{
-      newUser(type: UserType!, name: String!, address: String!, phone: Int!, web: String, thumbnail: String): Protectora!
+    createUser(userInput: UserInput) : User
+      
   }
 
 `;
