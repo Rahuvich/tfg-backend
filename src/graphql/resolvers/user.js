@@ -38,13 +38,6 @@ module.exports = {
         throw err;
       }
     },
-    getAllProtectoras: async (_, args) => {
-      const protectoras = await Protectora.find();
-      return protectoras.map((p) => {
-        p._id = p._id.toString();
-        return p;
-      });
-    },
   },
 
   Mutation: {

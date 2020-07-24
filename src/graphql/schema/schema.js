@@ -244,10 +244,6 @@ type OtherAnimal implements AnimalAd & Ad & Node{
     helloWorld: String!
     login(email: String!, password: String!): AuthData!
     getUser(id: String!): User!
-    getAllProtectoras: [Protectora!]!
-    animalsAds: [AnimalAd]
-    servicesAds: [ServiceAd]
-    productsAds: [ProductAd]
   }
 
   type Mutation{
