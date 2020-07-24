@@ -7,6 +7,7 @@ class Connection {
 
     console.log(`URI: ${uri}`);
 
+    mongoose.set("useFindAndModify", false);
     mongoose
       .connect(uri, {
         useNewUrlParser: true,

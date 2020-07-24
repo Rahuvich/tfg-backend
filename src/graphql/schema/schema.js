@@ -47,6 +47,16 @@ enum DeliveryStatus {
     phone: Int!
     email: String!
     password: String!
+    web: String
+  }
+
+  input UserInputOptional {
+    name: String
+    address: String
+    phone: Int
+    email: String
+    password: String
+    web: String
   }
 
   interface User implements Node{
@@ -325,6 +335,7 @@ type Other implements AnimalAd & Ad & Node{
   type Query {
     helloWorld: String!
     login(email: String!, password: String!): AuthData!
+    getProtectora(id: String!): Protectora!
     getAllProtectoras: [Protectora!]!
     animalsAds: [AnimalAd]
     servicesAds: [ServiceAd]
@@ -333,7 +344,7 @@ type Other implements AnimalAd & Ad & Node{
 
   type Mutation{
     createUser(userInput: UserInput) : User
-      
+    updateUser(userInput: UserInputOptional) : User!
   }
 
 

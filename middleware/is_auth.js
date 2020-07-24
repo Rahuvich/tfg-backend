@@ -1,4 +1,4 @@
-import jwt from jsonwebtoken;
+import jwt from "jsonwebtoken";
 
 module.exports = (req, res, next) => {
   const authHeader = req.get("Authorization");
@@ -8,29 +8,26 @@ module.exports = (req, res, next) => {
   }
   const token = authHeader.split(" ")[1];
 
-    if(!token || token ==='') {
-        req.isAuth = false;
-    return next();
-    }
-
-    let decodedToken;
-
-    try{
-        decodedToken = jwt.verify(token, 'someSuperSecretKey')
-    } catch (err) {
-
+  if (!token || token === "") {
     req.isAuth = false;
     return next();
-    }
+  }
 
-    if(!decodedToken){
+  let decodedToken;
 
+  try {
+    decodedToken = jwt.verify(token, "someSuperSecretKey");
+  } catch (err) {
     req.isAuth = false;
     return next();
-    }
+  }
 
-
-    req.isAuth = true;
-    req.userId = decodedToken.userId
+  if (!decodedToken) {
+    req.isAuth = false;
     return next();
+  }
+
+  req.isAuth = true;
+  req.userId = decodedToken.userId;
+  return next();
 };

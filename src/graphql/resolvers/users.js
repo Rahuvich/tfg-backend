@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { dateToString } from "../../../helpers/date";
 import jwt from "jsonwebtoken";
 import { Profesionales, Protectoras, Particulares } from "../../models/User";
+import UserService from "../../services/users";
 
 module.exports = {
   User: {
@@ -24,30 +25,18 @@ module.exports = {
       return "Hello world";
     },
     login: async (_, { email, password }) => {
-      const user = await Particulares.findOne({ email: email });
-      if (!user) {
-        throw new Error("Invalid email");
+      try {
+        return await UserService.login(email, password);
+      } catch (err) {
+        throw err;
       }
-      const isEqual = await bcrypt.compare(password, user.password);
-      if (!isEqual) {
-        throw new Error("Invalid password");
+    },
+    getProtectora: async (_, { id }) => {
+      try {
+        return await UserService.getProtectora(id);
+      } catch (err) {
+        throw err;
       }
-
-      const token = jwt.sign(
-        {
-          userId: user.id,
-          email: user.email,
-        },
-        "someSuperSecretKey",
-        {
-          expiresIn: "1h",
-        }
-      );
-      return {
-        userId: user.id,
-        token: token,
-        tokenExpiration: 1,
-      };
     },
     getAllProtectoras: async (_, args) => {
       const protectoras = await Protectoras.find();
@@ -59,59 +48,19 @@ module.exports = {
   },
 
   Mutation: {
+    updateUser: async (_, { userInput }, req) => {
+      if (!req.isAuth) {
+        throw new Error("You must be logged in");
+      }
+      try {
+        return await UserService.updateUser(req.userId, userInput);
+      } catch (err) {
+        throw err;
+      }
+    },
     createUser: async (_, { userInput }) => {
       try {
-        const hashedPassword = await bcrypt.hash(userInput.password, 12);
-        let user;
-        switch (userInput.type) {
-          case "PROTECTORA":
-            user = await Protectoras.findOne({ email: userInput.email });
-            if (user) {
-              throw new Error("Email already in use");
-            }
-
-            user = await new Protectoras({
-              email: userInput.email,
-              name: userInput.name,
-              phone: userInput.phone,
-              address: userInput.address,
-              password: hashedPassword,
-            }).save();
-            break;
-          case "PROFESIONAL":
-            user = await Profesionales.findOne({ email: userInput.email });
-            if (user) {
-              throw new Error("Email already in use");
-            }
-
-            user = await new Profesionales({
-              email: userInput.email,
-              name: userInput.name,
-              phone: userInput.phone,
-              address: userInput.address,
-              password: hashedPassword,
-            }).save();
-            break;
-          case "PARTICULAR":
-            user = await Particulares.findOne({ email: userInput.email });
-            if (user) {
-              throw new Error("Email already in use");
-            }
-
-            user = await new Particulares({
-              email: userInput.email,
-              name: userInput.name,
-              phone: userInput.phone,
-              address: userInput.address,
-              password: hashedPassword,
-            }).save();
-            break;
-          default:
-            throw new Error("Invalid type");
-        }
-
-        user._id = user._id.toString();
-        return user;
+        return await UserService.createUser(userInput);
       } catch (err) {
         throw err;
       }
