@@ -1,5 +1,5 @@
 // * Import resolvers
-import userResolver from "./users";
+import userResolver from "./user";
 import typesResolver from "./types";
 
 const rootResolver = {

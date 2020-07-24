@@ -1,19 +1,19 @@
 import bcrypt from "bcryptjs";
 import { dateToString } from "../../../helpers/date";
 import jwt from "jsonwebtoken";
-import { Profesionales, Protectoras, Particulares } from "../../models/User";
-import UserService from "../../services/users";
+import { Profesional, Protectora, Particular } from "../../models/user";
+import UserService from "../../services/user";
 
 module.exports = {
   User: {
     __resolveType(data) {
-      if (data instanceof Profesionales) {
+      if (data instanceof Profesional) {
         return "Profesional";
       }
-      if (data instanceof Particulares) {
+      if (data instanceof Particular) {
         return "Particular";
       }
-      if (data instanceof Protectoras) {
+      if (data instanceof Protectora) {
         return "Protectora";
       }
       return null;
@@ -31,15 +31,15 @@ module.exports = {
         throw err;
       }
     },
-    getProtectora: async (_, { id }) => {
+    getUser: async (_, { id }) => {
       try {
-        return await UserService.getProtectora(id);
+        return await UserService.getUser(id);
       } catch (err) {
         throw err;
       }
     },
     getAllProtectoras: async (_, args) => {
-      const protectoras = await Protectoras.find();
+      const protectoras = await Protectora.find();
       return protectoras.map((p) => {
         p._id = p._id.toString();
         return p;

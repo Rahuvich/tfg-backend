@@ -1,3 +1,5 @@
+//! https://www.apollographql.com/blog/modularizing-your-graphql-schema-code-d7f71d5ed5f2/
+
 const typeDefs = `
 scalar Date
 scalar DateTime
@@ -5,6 +7,8 @@ scalar DateTime
 
 interface Node {
     _id: ID!
+    createdAt: String!
+    updatedAt: String
 }
 
 enum DeliveryStatus {
@@ -68,6 +72,9 @@ enum DeliveryStatus {
     phone: Int!
     thumbnail: String
     password: String
+
+    createdAt: String!
+    updatedAt: String
   }
 
   type Protectora implements User & Node{
@@ -81,6 +88,9 @@ enum DeliveryStatus {
     password: String
 
     web: String
+
+    createdAt: String!
+    updatedAt: String
   }
 
   type Profesional implements User & Node{
@@ -94,6 +104,9 @@ enum DeliveryStatus {
     password: String
 
     web: String
+
+    createdAt: String!
+    updatedAt: String
   }
 
   type Particular implements User & Node{
@@ -106,6 +119,8 @@ enum DeliveryStatus {
     thumbnail: String
     password: String
 
+    createdAt: String!
+    updatedAt: String
   }
 
   interface Ad implements Node{
@@ -115,6 +130,9 @@ enum DeliveryStatus {
       tags: [String!]!
       photos: [String]
       owner: User!
+
+      createdAt: String!
+      updatedAt: String
   }
 
 type ProductAd implements Ad & Node{
@@ -128,6 +146,9 @@ type ProductAd implements Ad & Node{
     title: String!
     price: Float!
     description: String!
+
+    createdAt: String!
+    updatedAt: String
 }
 type ServiceAd implements Ad & Node{
     _id: ID!
@@ -140,6 +161,9 @@ type ServiceAd implements Ad & Node{
     title: String!
     priceHour: Float!
     description: String!
+
+    createdAt: String!
+    updatedAt: String
 }
 
 interface AnimalAd implements Ad & Node{
@@ -161,6 +185,9 @@ interface AnimalAd implements Ad & Node{
     mustKnow: String
     deliveryInfo: [DeliveryStatus!]!
     breed: String
+
+    createdAt: String!
+    updatedAt: String
 }
 
 type Dog implements AnimalAd & Ad & Node{
@@ -184,9 +211,12 @@ type Dog implements AnimalAd & Ad & Node{
     breed: String
 
     size: DogSize!
+
+    createdAt: String!
+    updatedAt: String
 }
 
-type Bird implements AnimalAd & Ad & Node{
+type OtherAnimal implements AnimalAd & Ad & Node{
     _id: ID!
 
       date: DateTime!
@@ -205,137 +235,15 @@ type Bird implements AnimalAd & Ad & Node{
     mustKnow: String
     deliveryInfo: [DeliveryStatus!]!
     breed: String
-}
 
-type Cat implements AnimalAd & Ad & Node{
-    _id: ID!
-
-      date: DateTime!
-      tags: [String!]!
-      photos: [String]
-      owner: User!
-      
-    name: String!
-    description: String!
-    activityLevel: ActivityLevel!
-    birthDate: Date!
-    male: Boolean!
-    adoptionTax: Float!
-    weight: Float!
-    personality: [String!]!
-    mustKnow: String
-    deliveryInfo: [DeliveryStatus!]!
-    breed: String
-}
-
-type Fish implements AnimalAd & Ad & Node{
-    _id: ID!
-
-      date: DateTime!
-      tags: [String!]!
-      photos: [String]
-      owner: User!
-      
-    name: String!
-    description: String!
-    activityLevel: ActivityLevel!
-    birthDate: Date!
-    male: Boolean!
-    adoptionTax: Float!
-    weight: Float!
-    personality: [String!]!
-    mustKnow: String
-    deliveryInfo: [DeliveryStatus!]!
-    breed: String
-}
-
-type Reptile implements AnimalAd & Ad & Node{
-    _id: ID!
-
-      date: DateTime!
-      tags: [String!]!
-      photos: [String]
-      owner: User!
-      
-    name: String!
-    description: String!
-    activityLevel: ActivityLevel!
-    birthDate: Date!
-    male: Boolean!
-    adoptionTax: Float!
-    weight: Float!
-    personality: [String!]!
-    mustKnow: String
-    deliveryInfo: [DeliveryStatus!]!
-    breed: String
-}
-
-type Bunny implements AnimalAd & Ad & Node{
-    _id: ID!
-
-      date: DateTime!
-      tags: [String!]!
-      photos: [String]
-      owner: User!
-      
-    name: String!
-    description: String!
-    activityLevel: ActivityLevel!
-    birthDate: Date!
-    male: Boolean!
-    adoptionTax: Float!
-    weight: Float!
-    personality: [String!]!
-    mustKnow: String
-    deliveryInfo: [DeliveryStatus!]!
-    breed: String
-}
-
-type Rodent implements AnimalAd & Ad & Node{
-    _id: ID!
-
-      date: DateTime!
-      tags: [String!]!
-      photos: [String]
-      owner: User!
-      
-    name: String!
-    description: String!
-    activityLevel: ActivityLevel!
-    birthDate: Date!
-    male: Boolean!
-    adoptionTax: Float!
-    weight: Float!
-    personality: [String!]!
-    mustKnow: String
-    deliveryInfo: [DeliveryStatus!]!
-    breed: String
-}
-type Other implements AnimalAd & Ad & Node{
-    _id: ID!
-
-      date: DateTime!
-      tags: [String!]!
-      photos: [String]
-      owner: User!
-      
-    name: String!
-    description: String!
-    activityLevel: ActivityLevel!
-    birthDate: Date!
-    male: Boolean!
-    adoptionTax: Float!
-    weight: Float!
-    personality: [String!]!
-    mustKnow: String
-    deliveryInfo: [DeliveryStatus!]!
-    breed: String
+    createdAt: String!
+    updatedAt: String
 }
 
   type Query {
     helloWorld: String!
     login(email: String!, password: String!): AuthData!
-    getProtectora(id: String!): Protectora!
+    getUser(id: String!): User!
     getAllProtectoras: [Protectora!]!
     animalsAds: [AnimalAd]
     servicesAds: [ServiceAd]

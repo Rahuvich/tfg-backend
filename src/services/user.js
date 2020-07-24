@@ -1,12 +1,12 @@
 import bcrypt from "bcryptjs";
-import { Protectoras, Profesionales, Particulares } from "../models/User";
+import { Protectora, Profesional, Particular } from "../models/user";
 import jwt from "jsonwebtoken";
 import removeNullProperties from "../../helpers/removeNullProperties";
 
 class UserService {
   constructor() {}
 
-  async getProtectora(id) {
+  async getUser(id) {
     const model = await this.getUserModelById(id);
     const user = await model.findOne({ _id: id });
 
@@ -69,17 +69,17 @@ class UserService {
   }
 
   async isEmailAlreadyInUse(email) {
-    let user = await Protectoras.findOne({ email: email });
+    let user = await Protectora.findOne({ email: email });
     if (user) {
       return true;
     }
 
-    user = await Profesionales.findOne({ email: email });
+    user = await Profesional.findOne({ email: email });
     if (user) {
       return true;
     }
 
-    user = await Particulares.findOne({ email: email });
+    user = await Particular.findOne({ email: email });
     if (user) {
       return true;
     }
@@ -87,19 +87,19 @@ class UserService {
   }
 
   async getUserModelById(id) {
-    let user = await Protectoras.findOne({ _id: id });
+    let user = await Protectora.findOne({ _id: id });
     if (user) {
-      return Protectoras;
+      return Protectora;
     }
 
-    user = await Profesionales.findOne({ _id: id });
+    user = await Profesional.findOne({ _id: id });
     if (user) {
-      return Profesionales;
+      return Profesional;
     }
 
-    user = await Particulares.findOne({ _id: id });
+    user = await Particular.findOne({ _id: id });
     if (user) {
-      return Particulares;
+      return Particular;
     }
 
     throw new Error("User does not exists");
@@ -108,28 +108,28 @@ class UserService {
   async getUserModelByType(type) {
     switch (type) {
       case "PROTECTORA":
-        return Protectoras;
+        return Protectora;
       case "PROFESIONAL":
-        return Profesionales;
+        return Profesional;
       case "PARTICULAR":
-        return Particulares;
+        return Particular;
       default:
         throw new Error("Invalid type");
     }
   }
 
   async getUserByEmail(email) {
-    let user = await Protectoras.findOne({ email: email });
+    let user = await Protectora.findOne({ email: email });
     if (user) {
       return user;
     }
 
-    user = await Profesionales.findOne({ email: email });
+    user = await Profesional.findOne({ email: email });
     if (user) {
       return user;
     }
 
-    user = await Particulares.findOne({ email: email });
+    user = await Particular.findOne({ email: email });
     if (user) {
       return user;
     }

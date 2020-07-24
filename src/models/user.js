@@ -22,8 +22,8 @@ const ProfesionalSchema = extendSchema(UserSchema, {
 
 const ParticularSchema = extendSchema(UserSchema, {});
 
-export const Protectoras = mongoose.model("protectoras", ProtectoraSchema);
+export const Protectora = mongoose.model("protectoras", ProtectoraSchema);
 
-export const Profesionales = mongoose.model("profesionales", ProfesionalSchema);
+export const Profesional = mongoose.model("profesionales", ProfesionalSchema);
 
-export const Particulares = mongoose.model("particulares", ParticularSchema);
+export const Particular = mongoose.model("particulares", ParticularSchema);
