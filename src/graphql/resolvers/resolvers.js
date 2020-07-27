@@ -1,8 +1,8 @@
 // * Import resolvers
 import userResolver from "./user";
+import adResolver from "./ad";
+import { merge } from "lodash";
 
-const rootResolver = {
-  ...userResolver,
-};
+const rootResolver = merge(userResolver, adResolver);
 
 module.exports = rootResolver;

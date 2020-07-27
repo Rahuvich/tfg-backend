@@ -2,13 +2,12 @@
 
 const typeDefs = `
 scalar Date
-scalar DateTime
 
 
 interface Node {
     _id: ID!
-    createdAt: String!
-    updatedAt: String
+    createdAt: Date!
+    updatedAt: Date
 }
 
 enum DeliveryStatus {
@@ -38,8 +37,20 @@ enum DeliveryStatus {
     PROTECTORA
   }
 
+  enum AnimalType {
+    DOG
+    BIRD
+    CAT
+    FISH
+    REPTILE
+    BUNNY
+    RODENT
+    OTHER
+
+  }
+
   type AuthData {
-    userId: ID!
+    user: User!
     token: String!
     tokenExpiration: Int!
   }
@@ -63,6 +74,43 @@ enum DeliveryStatus {
     web: String
   }
 
+  input AnimalAdInput {
+    type: AnimalType
+    tags: [String!]!
+    photos: [String]
+    name: String!
+    description: String!
+    activityLevel: ActivityLevel!
+    birthDate: Date!
+    male: Boolean!
+    adoptionTax: Float!
+    weight: Float!
+    personality: [String!]!
+    mustKnow: String
+    deliveryInfo: [DeliveryStatus!]!
+    breed: String
+    size: DogSize
+  }
+
+  input AnimalAdInputOptional {
+    _id: ID!
+    type: AnimalType
+    tags: [String!]
+    photos: [String]
+    name: String
+    description: String
+    activityLevel: ActivityLevel
+    birthDate: Date
+    male: Boolean
+    adoptionTax: Float
+    weight: Float
+    personality: [String!]
+    mustKnow: String
+    deliveryInfo: [DeliveryStatus!]
+    breed: String
+    size: DogSize
+  }
+
   interface User implements Node{
     _id: ID!
 
@@ -71,10 +119,9 @@ enum DeliveryStatus {
     address: String!
     phone: Int!
     thumbnail: String
-    password: String
 
-    createdAt: String!
-    updatedAt: String
+    createdAt: Date!
+    updatedAt: Date
   }
 
   type Protectora implements User & Node{
@@ -85,12 +132,11 @@ enum DeliveryStatus {
     address: String!
     phone: Int!
     thumbnail: String
-    password: String
 
     web: String
 
-    createdAt: String!
-    updatedAt: String
+    createdAt: Date!
+    updatedAt: Date
   }
 
   type Profesional implements User & Node{
@@ -101,12 +147,11 @@ enum DeliveryStatus {
     address: String!
     phone: Int!
     thumbnail: String
-    password: String
 
     web: String
 
-    createdAt: String!
-    updatedAt: String
+    createdAt: Date!
+    updatedAt: Date
   }
 
   type Particular implements User & Node{
@@ -117,62 +162,61 @@ enum DeliveryStatus {
     address: String!
     phone: Int!
     thumbnail: String
-    password: String
 
-    createdAt: String!
-    updatedAt: String
+    createdAt: Date!
+    updatedAt: Date
   }
 
   interface Ad implements Node{
     _id: ID!
 
-      date: DateTime!
+      
       tags: [String!]!
       photos: [String]
-      owner: User!
+      creator: User!
 
-      createdAt: String!
-      updatedAt: String
+      createdAt: Date!
+      updatedAt: Date
   }
 
 type ProductAd implements Ad & Node{
     _id: ID!
 
-      date: DateTime!
+      
       tags: [String!]!
       photos: [String]
-      owner: User!
+      creator: User!
 
     title: String!
     price: Float!
     description: String!
 
-    createdAt: String!
-    updatedAt: String
+    createdAt: Date!
+    updatedAt: Date
 }
 type ServiceAd implements Ad & Node{
     _id: ID!
 
-      date: DateTime!
+      
       tags: [String!]!
       photos: [String]
-      owner: User!
+      creator: User!
 
     title: String!
     priceHour: Float!
     description: String!
 
-    createdAt: String!
-    updatedAt: String
+    createdAt: Date!
+    updatedAt: Date
 }
 
 interface AnimalAd implements Ad & Node{
     _id: ID!
 
-      date: DateTime!
+      
       tags: [String!]!
       photos: [String]
-      owner: User!
+      creator: User!
       
     name: String!
     description: String!
@@ -186,17 +230,17 @@ interface AnimalAd implements Ad & Node{
     deliveryInfo: [DeliveryStatus!]!
     breed: String
 
-    createdAt: String!
-    updatedAt: String
+    createdAt: Date!
+    updatedAt: Date
 }
 
 type Dog implements AnimalAd & Ad & Node{
     _id: ID!
 
-      date: DateTime!
+      
       tags: [String!]!
       photos: [String]
-      owner: User!
+      creator: User!
       
     name: String!
     description: String!
@@ -212,17 +256,17 @@ type Dog implements AnimalAd & Ad & Node{
 
     size: DogSize!
 
-    createdAt: String!
-    updatedAt: String
+    createdAt: Date!
+    updatedAt: Date
 }
 
 type OtherAnimal implements AnimalAd & Ad & Node{
     _id: ID!
 
-      date: DateTime!
+      
       tags: [String!]!
       photos: [String]
-      owner: User!
+      creator: User!
       
     name: String!
     description: String!
@@ -236,19 +280,25 @@ type OtherAnimal implements AnimalAd & Ad & Node{
     deliveryInfo: [DeliveryStatus!]!
     breed: String
 
-    createdAt: String!
-    updatedAt: String
+    type: AnimalType
+
+    createdAt: Date!
+    updatedAt: Date
 }
 
   type Query {
     helloWorld: String!
     login(email: String!, password: String!): AuthData!
-    getUser(id: String!): User!
+    getUser(id: String!): User
+    getAnimalAd(id: String!): AnimalAd
   }
 
   type Mutation{
-    createUser(userInput: UserInput) : User
-    updateUser(userInput: UserInputOptional) : User!
+    createUser(userInput: UserInput!) : AuthData!
+    updateUser(userInput: UserInputOptional!) : User!
+    createAnimalAd(adInput: AnimalAdInput!) : AnimalAd!
+    updateAnimalAd(adInput: AnimalAdInputOptional!) : AnimalAd!
+    deleteAnimalAd(id: String!) : AnimalAd!
   }
 
 

@@ -1,6 +1,3 @@
-import bcrypt from "bcryptjs";
-import { dateToString } from "../../../helpers/date";
-import jwt from "jsonwebtoken";
 import { Profesional, Protectora, Particular } from "../../models/user";
 import UserService from "../../services/user";
 

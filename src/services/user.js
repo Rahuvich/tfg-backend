@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import { dateToString } from "../../helpers/date";
 import { Protectora, Profesional, Particular } from "../models/user";
 import jwt from "jsonwebtoken";
 import removeNullProperties from "../../helpers/removeNullProperties";
@@ -8,7 +9,7 @@ class UserService {
 
   async getUser(id) {
     const model = await this.getUserModelById(id);
-    const user = await model.findOne({ _id: id });
+    const user = await model.findById(id);
 
     return this.prettifyUser(user, true);
   }
@@ -35,7 +36,7 @@ class UserService {
       }
     );
     return {
-      userId: user.id,
+      user: this.prettifyUser(user, true),
       token: token,
       tokenExpiration: 1,
     };
@@ -47,12 +48,16 @@ class UserService {
     }
 
     const hashedPassword = await bcrypt.hash(data.password, 12);
-    data.password = hashedPassword;
 
-    const model = await this.getUserModelByType(data.type);
-    const user = await new model(data).save();
+    const newData = {
+      ...data,
+      password: hashedPassword,
+    };
 
-    return user;
+    const model = await this.getUserModelByType(newData.type);
+    await new model(newData).save();
+
+    return await this.login(data.email, data.password);
   }
 
   async updateUser(userId, newData) {
@@ -140,8 +145,8 @@ class UserService {
     if (removePassword) {
       user.password = undefined;
     }
+
     user = removeNullProperties(user);
-    console.log(user);
     return user;
   }
 }
