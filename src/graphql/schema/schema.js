@@ -290,6 +290,7 @@ type OtherAnimal implements AnimalAd & Ad & Node{
     helloWorld: String!
     login(email: String!, password: String!): AuthData!
     getUser(id: String!): User
+    currentUser: User
     getAnimalAd(id: String!): AnimalAd
   }
 

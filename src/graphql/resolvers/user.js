@@ -21,6 +21,16 @@ module.exports = {
     helloWorld: () => {
       return "Hello world";
     },
+    currentUser: async (_, context, req) => {
+      if (!req.isAuth) {
+        throw new Error("You must be logged in");
+      }
+      try {
+        return await UserService.getUser(req.userId);
+      } catch (err) {
+        throw err;
+      }
+    },
     login: async (_, { email, password }) => {
       try {
         return await UserService.login(email, password);
