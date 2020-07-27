@@ -73,37 +73,16 @@ class UserService {
     return updatedUser;
   }
 
-  async isEmailAlreadyInUse(email) {
-    let user = await Protectora.findOne({ email: email });
-    if (user) {
-      return true;
-    }
-
-    user = await Profesional.findOne({ email: email });
-    if (user) {
-      return true;
-    }
-
-    user = await Particular.findOne({ email: email });
-    if (user) {
-      return true;
-    }
-    return false;
-  }
-
   async getUserModelById(id) {
-    let user = await Protectora.findOne({ _id: id });
-    if (user) {
+    if (await this.isProtectora(id)) {
       return Protectora;
     }
 
-    user = await Profesional.findOne({ _id: id });
-    if (user) {
+    if (await this.isProfesional(id)) {
       return Profesional;
     }
 
-    user = await Particular.findOne({ _id: id });
-    if (user) {
+    if (await this.isParticular(id)) {
       return Particular;
     }
 
@@ -123,6 +102,15 @@ class UserService {
     }
   }
 
+  async isEmailAlreadyInUse(email) {
+    let user = await this.getUserByEmail(email);
+
+    if (user) {
+      return true;
+    }
+    return false;
+  }
+
   async getUserByEmail(email) {
     let user = await Protectora.findOne({ email: email });
     if (user) {
@@ -139,6 +127,30 @@ class UserService {
       return user;
     }
     return undefined;
+  }
+
+  async isProtectora(id) {
+    const user = await Protectora.findById(id);
+    if (user) {
+      return true;
+    }
+    return false;
+  }
+
+  async isProfesional(id) {
+    const user = await Profesional.findById(id);
+    if (user) {
+      return true;
+    }
+    return false;
+  }
+
+  async isParticular(id) {
+    const user = await Particular.findById(id);
+    if (user) {
+      return true;
+    }
+    return false;
   }
 
   prettifyUser(user, removePassword) {

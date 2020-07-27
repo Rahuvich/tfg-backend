@@ -45,6 +45,12 @@ class AdService {
 
   async createAnimalAd(userId, adInput) {
     const user = await UserService.getUser(userId);
+    if (
+      !(await UserService.isProtectora(userId)) &&
+      !(await UserService.isParticular(userId))
+    ) {
+      throw new Error("Profesionals can not create an animal ad");
+    }
 
     const data = { ...adInput };
 
