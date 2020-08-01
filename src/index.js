@@ -3,7 +3,11 @@ import app from "../config/server";
 import express from "express";
 
 import { graphqlHTTP } from "express-graphql";
+
+import { typeDef as userTypes } from "./graphql/schema/user";
+import { typeDef as adTypes } from "./graphql/schema/ad";
 import typeDefs from "./graphql/schema/schema";
+
 import graphQlResolvers from "./graphql/resolvers/resolvers";
 import { makeExecutableSchema } from "graphql-tools";
 import isAuth from "../middleware/is_auth";
@@ -11,7 +15,7 @@ import isAuth from "../middleware/is_auth";
 app.use(express.json());
 
 const schema = makeExecutableSchema({
-  typeDefs: typeDefs,
+  typeDefs: [typeDefs, adTypes, userTypes],
   resolvers: graphQlResolvers,
 });
 

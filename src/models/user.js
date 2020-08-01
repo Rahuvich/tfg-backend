@@ -9,7 +9,7 @@ const ValuationsSchema = new Schema(
     comment: { type: String, required: true, trim: true },
     author: {
       type: Schema.Types.ObjectId,
-      ref: "fromModel",
+      refPath: "fromModel",
       required: true,
     },
     fromModel: {

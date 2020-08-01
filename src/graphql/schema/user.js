@@ -1,0 +1,110 @@
+export const typeDef = `
+
+type AuthData {
+    user: User!
+    token: String!
+    tokenExpiration: Int!
+  }
+
+
+enum UserType {
+    PARTICULAR
+    PROFESIONAL
+    PROTECTORA
+  }
+
+
+input UserInput {
+    type: UserType!
+    name: String!
+    address: String!
+    phone: Int!
+    email: String!
+    password: String!
+    web: String
+  }
+
+  input UserInputOptional {
+    name: String
+    address: String
+    phone: Int
+    email: String
+    password: String
+    web: String
+  }
+
+
+input ValuationInput {
+    userId: ID!
+    value: Float!
+    comment: String!
+  }
+
+
+type Valuation {
+    value: Float!
+    comment: String!
+    author: User!
+  }
+
+  interface User implements Node{
+    _id: ID!
+
+    name: String!
+    email: String!
+    address: String!
+    phone: Int!
+    thumbnail: String
+    valuations: [Valuation!]
+
+    createdAt: Date!
+    updatedAt: Date
+  }
+
+  type Protectora implements User & Node{
+    _id: ID!
+
+    name: String!
+    email: String!
+    address: String!
+    phone: Int!
+    thumbnail: String
+    valuations: [Valuation!]
+
+    web: String
+
+    createdAt: Date!
+    updatedAt: Date
+  }
+
+  type Profesional implements User & Node{
+    _id: ID!
+    
+    name: String!
+    email: String!
+    address: String!
+    phone: Int!
+    thumbnail: String
+    valuations: [Valuation!]
+
+    web: String
+
+    createdAt: Date!
+    updatedAt: Date
+  }
+
+  type Particular implements User & Node{
+    _id: ID!
+    
+    name: String!
+    email: String!
+    address: String!
+    phone: Int!
+    thumbnail: String
+    valuations: [Valuation!]
+
+    createdAt: Date!
+    updatedAt: Date
+  }
+
+`;

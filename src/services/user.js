@@ -8,9 +8,7 @@ class UserService {
   async getUser(id, prettify = false) {
     const model = await this.getUserModelById(id);
     const user = await model.findById(id);
-    return prettify
-      ? await user.populate("valuations.author").execPopulate()
-      : user;
+    return prettify ? await this.populateValuations(user.id) : user;
   }
 
   async login(email, password) {
