@@ -40,7 +40,7 @@ module.exports = {
     },
     getUser: async (_, { id }) => {
       try {
-        return await UserService.getUser(id);
+        return await UserService.getUser(id, true);
       } catch (err) {
         throw err;
       }
@@ -48,6 +48,26 @@ module.exports = {
   },
 
   Mutation: {
+    valuateUser: async (_, { input }, req) => {
+      if (!req.isAuth) {
+        throw new Error("You must be logged in");
+      }
+      try {
+        return await UserService.valuateUser(req.userId, input);
+      } catch (err) {
+        throw err;
+      }
+    },
+    removeValuation: async (_, { id }, req) => {
+      if (!req.isAuth) {
+        throw new Error("You must be logged in");
+      }
+      try {
+        return await UserService.removeValuation(req.userId, id);
+      } catch (err) {
+        throw err;
+      }
+    },
     updateUser: async (_, { userInput }, req) => {
       if (!req.isAuth) {
         throw new Error("You must be logged in");

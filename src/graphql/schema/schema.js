@@ -74,6 +74,43 @@ enum DeliveryStatus {
     web: String
   }
 
+
+  input ServiceAdInput {
+    tags: [String!]!
+    photos: [String]
+    title: String!
+    priceHour: Float!
+    description: String!
+  }
+
+  input ServiceAdInputOptional {
+    _id: ID!
+    tags: [String!]
+    photos: [String]
+    title: String
+    priceHour: Float
+    description: String
+  }
+
+
+  input ProductAdInput {
+    tags: [String!]!
+    photos: [String]
+    title: String!
+    price: Float!
+    description: String!
+  }
+
+  input ProductAdInputOptional {
+    _id: ID!
+    tags: [String!]
+    photos: [String]
+    title: String
+    price: Float
+    description: String
+  }
+
+
   input AnimalAdInput {
     type: AnimalType
     tags: [String!]!
@@ -111,6 +148,18 @@ enum DeliveryStatus {
     size: DogSize
   }
 
+  input ValuationInput {
+    userId: ID!
+    value: Float!
+    comment: String!
+  }
+
+  type Valuation {
+    value: Float!
+    comment: String!
+    author: User!
+  }
+
   interface User implements Node{
     _id: ID!
 
@@ -119,6 +168,7 @@ enum DeliveryStatus {
     address: String!
     phone: Int!
     thumbnail: String
+    valuations: [Valuation!]
 
     createdAt: Date!
     updatedAt: Date
@@ -132,6 +182,7 @@ enum DeliveryStatus {
     address: String!
     phone: Int!
     thumbnail: String
+    valuations: [Valuation!]
 
     web: String
 
@@ -147,6 +198,7 @@ enum DeliveryStatus {
     address: String!
     phone: Int!
     thumbnail: String
+    valuations: [Valuation!]
 
     web: String
 
@@ -162,6 +214,7 @@ enum DeliveryStatus {
     address: String!
     phone: Int!
     thumbnail: String
+    valuations: [Valuation!]
 
     createdAt: Date!
     updatedAt: Date
@@ -214,9 +267,9 @@ interface AnimalAd implements Ad & Node{
     _id: ID!
 
       
-      tags: [String!]!
-      photos: [String]
-      creator: User!
+    tags: [String!]!
+    photos: [String]
+    creator: User!
       
     name: String!
     description: String!
@@ -238,9 +291,9 @@ type Dog implements AnimalAd & Ad & Node{
     _id: ID!
 
       
-      tags: [String!]!
-      photos: [String]
-      creator: User!
+    tags: [String!]!
+    photos: [String]
+    creator: User!
       
     name: String!
     description: String!
@@ -262,11 +315,10 @@ type Dog implements AnimalAd & Ad & Node{
 
 type OtherAnimal implements AnimalAd & Ad & Node{
     _id: ID!
-
       
-      tags: [String!]!
-      photos: [String]
-      creator: User!
+    tags: [String!]!
+    photos: [String]
+    creator: User!
       
     name: String!
     description: String!
@@ -291,18 +343,31 @@ type OtherAnimal implements AnimalAd & Ad & Node{
     login(email: String!, password: String!): AuthData!
     getUser(id: String!): User
     currentUser: User
-    getAnimalAd(id: String!): AnimalAd
+
+    getAd(id: String!): Ad
   }
 
   type Mutation{
     createUser(userInput: UserInput!) : AuthData!
     updateUser(userInput: UserInputOptional!) : User!
+
     createAnimalAd(adInput: AnimalAdInput!) : AnimalAd!
     updateAnimalAd(adInput: AnimalAdInputOptional!) : AnimalAd!
     deleteAnimalAd(id: String!) : AnimalAd!
+
+    createProductAd(adInput: ProductAdInput!) : ProductAd!
+    updateProductAd(adInput: ProductAdInputOptional!) : ProductAd!
+    deleteProductAd(id: String!) : ProductAd!
+
+    createServiceAd(adInput: ServiceAdInput!) : ServiceAd!
+    updateServiceAd(adInput: ServiceAdInputOptional!) : ServiceAd!
+    deleteServiceAd(id: String!) : ServiceAd!
+
+    valuateUser(input: ValuationInput) : User!
+    removeValuation(id: String!) : User!
+
+    saveAd(id: String!):User!
+    unsaveAd(id: String!):User!
   }
-
-
-
 `;
 module.exports = typeDefs;

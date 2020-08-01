@@ -5,7 +5,9 @@ module.exports = {
   Ad: {
     __resolveType(data) {
       if (data instanceof AnimalAd) {
-        return "AnimalAd";
+        if (data.type === "DOG") {
+          return "Dog";
+        } else return "OtherAnimal";
       }
       if (data instanceof ProductAd) {
         return "ProductAd";
@@ -13,21 +15,14 @@ module.exports = {
       if (data instanceof ServiceAd) {
         return "ServiceAd";
       }
-      return null;
-    },
-  },
-  AnimalAd: {
-    __resolveType(data) {
-      if (data.type === "DOG") {
-        return "Dog";
-      } else return "OtherAnimal";
+      throw new Error(`Ad unidentified ${data}`);
     },
   },
 
   Query: {
-    getAnimalAd: async (_, { id }) => {
+    getAd: async (_, { id }) => {
       try {
-        return await AdService.getAnimalAd(id);
+        return await AdService.getAd(id);
       } catch (err) {
         throw err;
       }
@@ -70,6 +65,86 @@ module.exports = {
 
       try {
         return await AdService.deleteAnimalAd(id);
+      } catch (err) {
+        throw err;
+      }
+    },
+
+    createProductAd: async (_, { adInput }, req) => {
+      if (!req.isAuth) {
+        throw new Error("You must be logged in");
+      }
+
+      try {
+        return await AdService.createProductAd(req.userId, adInput);
+      } catch (err) {
+        throw err;
+      }
+    },
+    updateProductAd: async (_, { adInput }, req) => {
+      if (!req.isAuth) {
+        throw new Error("You must be logged in");
+      } else if (
+        !(await AdService.isUserCreatorOfAd(req.userId, adInput._id))
+      ) {
+        throw new Error("Ad not found in your account");
+      }
+
+      try {
+        return await AdService.updateProductAd(adInput);
+      } catch (err) {
+        throw err;
+      }
+    },
+    deleteProductAd: async (_, { id }, req) => {
+      if (!req.isAuth) {
+        throw new Error("You must be logged in");
+      } else if (!(await AdService.isUserCreatorOfAd(req.userId, id))) {
+        throw new Error("Ad not found in your account");
+      }
+
+      try {
+        return await AdService.deleteProductAd(id);
+      } catch (err) {
+        throw err;
+      }
+    },
+
+    createServiceAd: async (_, { adInput }, req) => {
+      if (!req.isAuth) {
+        throw new Error("You must be logged in");
+      }
+
+      try {
+        return await AdService.createServiceAd(req.userId, adInput);
+      } catch (err) {
+        throw err;
+      }
+    },
+    updateServiceAd: async (_, { adInput }, req) => {
+      if (!req.isAuth) {
+        throw new Error("You must be logged in");
+      } else if (
+        !(await AdService.isUserCreatorOfAd(req.userId, adInput._id))
+      ) {
+        throw new Error("Ad not found in your account");
+      }
+
+      try {
+        return await AdService.updateServiceAd(adInput);
+      } catch (err) {
+        throw err;
+      }
+    },
+    deleteServiceAd: async (_, { id }, req) => {
+      if (!req.isAuth) {
+        throw new Error("You must be logged in");
+      } else if (!(await AdService.isUserCreatorOfAd(req.userId, id))) {
+        throw new Error("Ad not found in your account");
+      }
+
+      try {
+        return await AdService.deleteServiceAd(id);
       } catch (err) {
         throw err;
       }

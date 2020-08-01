@@ -1,17 +1,16 @@
 import bcrypt from "bcryptjs";
-import { dateToString } from "../../helpers/date";
 import { Protectora, Profesional, Particular } from "../models/user";
 import jwt from "jsonwebtoken";
-import removeNullProperties from "../../helpers/removeNullProperties";
 
 class UserService {
   constructor() {}
 
-  async getUser(id) {
+  async getUser(id, prettify = false) {
     const model = await this.getUserModelById(id);
     const user = await model.findById(id);
-
-    return this.prettifyUser(user, true);
+    return prettify
+      ? await user.populate("valuations.author").execPopulate()
+      : user;
   }
 
   async login(email, password) {
@@ -36,7 +35,7 @@ class UserService {
       }
     );
     return {
-      user: this.prettifyUser(user, true),
+      user: await this.populateValuations(user.id),
       token: token,
       tokenExpiration: 1,
     };
@@ -70,7 +69,66 @@ class UserService {
       new: true,
     });
 
-    return updatedUser;
+    return await this.populateValuations(updatedUser.id);
+  }
+
+  async valuateUser(userId, data) {
+    if (userId === data.userId) {
+      throw new Error("You can not valuate yourself");
+    }
+
+    const userValuator = await this.getUser(userId);
+    const userValuated = await this.getUser(data.userId);
+
+    const newData = {
+      ...data,
+      author: userValuator,
+      fromModel: userValuator.constructor.modelName,
+    };
+
+    if (await this.isUserAlreadyValuatedById(data.userId, userId)) {
+      userValuated.valuations = userValuated.valuations.map((valuation) => {
+        if (valuation.author.toString() === userId.toString()) {
+          return newData;
+        } else return valuation;
+      });
+    } else {
+      userValuated.valuations.push(newData);
+    }
+
+    await userValuated.save();
+
+    return await this.populateValuations(userValuated.id);
+  }
+
+  async removeValuation(userIdValuator, userIdValuated) {
+    const userValuated = await this.getUser(userIdValuated);
+
+    userValuated.valuations = userValuated.valuations.filter(
+      (valuation) => valuation.author.toString() !== userIdValuator.toString()
+    );
+
+    await userValuated.save();
+
+    return await this.populateValuations(userValuated.id);
+  }
+
+  async getUserByEmail(email) {
+    let user = await Protectora.findOne({ email: email });
+    if (user) {
+      return user;
+    }
+
+    user = await Profesional.findOne({ email: email });
+    if (user) {
+      return user;
+    }
+
+    user = await Particular.findOne({ email: email });
+    if (user) {
+      return user;
+    }
+    return null;
   }
 
   async getUserModelById(id) {
@@ -111,22 +169,11 @@ class UserService {
     return false;
   }
 
-  async getUserByEmail(email) {
-    let user = await Protectora.findOne({ email: email });
-    if (user) {
-      return user;
-    }
-
-    user = await Profesional.findOne({ email: email });
-    if (user) {
-      return user;
-    }
-
-    user = await Particular.findOne({ email: email });
-    if (user) {
-      return user;
-    }
-    return undefined;
+  async isUserAlreadyValuatedById(userValuatedId, userValuatorId) {
+    const userValuated = await this.getUser(userValuatedId);
+    return userValuated.valuations.some((valuation) => {
+      return valuation.author.toString() === userValuatorId.toString();
+    });
   }
 
   async isProtectora(id) {
@@ -153,12 +200,13 @@ class UserService {
     return false;
   }
 
-  prettifyUser(user, removePassword) {
-    if (removePassword) {
-      user.password = undefined;
+  // TODO Automatize this with Mongoose API
+  async populateValuations(userId) {
+    let user = await this.getUser(userId);
+    for (let i = 0; i < user.valuations.length; ++i) {
+      let id = user.valuations[i].author;
+      user.valuations[i].author = await this.getUser(id);
     }
-
-    user = removeNullProperties(user);
     return user;
   }
 }
