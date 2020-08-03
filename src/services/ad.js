@@ -64,7 +64,10 @@ class AdService {
         obj = {};
         obj[prop] = filters[prop];
       } else {
-        const regex = new RegExp(escapeRegex(filters[prop]), "i");
+        let regex = filters[prop];
+        if (prop !== "creator") {
+          regex = new RegExp(escapeRegex(filters[prop]), "i");
+        }
 
         obj = {};
         obj[prop] = regex;

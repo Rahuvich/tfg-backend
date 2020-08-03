@@ -116,6 +116,7 @@ input ServiceAdInput {
     male: Boolean,
     activityLevel: ActivityLevel,
     type: AnimalType,
+    creator: String
   }
 
 
