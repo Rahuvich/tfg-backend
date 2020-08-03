@@ -48,6 +48,26 @@ module.exports = {
   },
 
   Mutation: {
+    saveAd: async (_, { id }, req) => {
+      if (!req.isAuth) {
+        throw new Error("You must be logged in");
+      }
+      try {
+        return await UserService.saveAd(req.userId, id);
+      } catch (err) {
+        throw err;
+      }
+    },
+    unsaveAd: async (_, { id }, req) => {
+      if (!req.isAuth) {
+        throw new Error("You must be logged in");
+      }
+      try {
+        return await UserService.unsaveAd(req.userId, id);
+      } catch (err) {
+        throw err;
+      }
+    },
     valuateUser: async (_, { input }, req) => {
       if (!req.isAuth) {
         throw new Error("You must be logged in");

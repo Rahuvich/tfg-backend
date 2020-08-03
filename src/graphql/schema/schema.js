@@ -38,8 +38,8 @@ interface Node {
     valuateUser(input: ValuationInput) : User!
     removeValuation(id: String!) : User!
 
-    saveAd(id: String!):User!
-    unsaveAd(id: String!):User!
+    saveAd(id: String!): [Ad!]
+    unsaveAd(id: String!): [Ad!]
   }
 `;
 module.exports = typeDefs;

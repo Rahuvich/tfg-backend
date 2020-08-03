@@ -15,7 +15,7 @@ module.exports = {
       if (data instanceof ServiceAd) {
         return "ServiceAd";
       }
-      throw new Error(`Ad unidentified ${data}`);
+      throw new Error(`Custom error: Ad unidentified ${data}`);
     },
   },
 

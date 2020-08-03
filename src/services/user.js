@@ -1,9 +1,48 @@
 import bcrypt from "bcryptjs";
-import { Protectora, Profesional, Particular } from "../models/user";
+import { Protectora, Profesional, Particular, SavedAds } from "../models/user";
 import jwt from "jsonwebtoken";
+import AdService from "./ad";
+import mongoose from "mongoose";
 
 class UserService {
   constructor() {}
+
+  async saveAd(userId, adId) {
+    const user = await this.getUser(userId);
+    const ad = await AdService.getAd(adId);
+
+    if (!user || !ad) {
+      throw new Error("User or ad does not exist");
+    }
+
+    const data = {
+      user: user,
+      userFromModel: user.constructor.modelName,
+      ad: ad,
+      adFromModel: ad.constructor.modelName,
+    };
+
+    await new SavedAds(data).save();
+
+    const list = await SavedAds.find({ user: user.id }).populate("ad");
+
+    return list.map(
+      async (document) => await document.ad.populate("creator").execPopulate()
+    );
+  }
+
+  async unsaveAd(userId, adId) {
+    await SavedAds.findOneAndDelete({
+      user: userId,
+      ad: adId,
+    });
+
+    const list = await SavedAds.find({ user: userId }).populate("ad");
+
+    return list.map(
+      async (document) => await document.ad.populate("creator").execPopulate()
+    );
+  }
 
   async getUser(id, prettify = false) {
     const model = await this.getUserModelById(id);

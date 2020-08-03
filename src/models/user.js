@@ -3,6 +3,32 @@ const extendSchema = require("mongoose-extend-schema");
 
 const Schema = mongoose.Schema;
 
+const SavedAdsSchema = new Schema({
+  ad: {
+    type: Schema.Types.ObjectId,
+    refPath: "adFromModel",
+    required: true,
+  },
+  adFromModel: {
+    type: String,
+    required: true,
+    enum: ["animalAd", "productAd", "serviceAd"],
+  },
+  user: {
+    type: Schema.Types.ObjectId,
+    refPath: "userFromModel",
+    required: true,
+  },
+  userFromModel: {
+    type: String,
+    required: true,
+    enum: ["profesional", "particular", "protectora"],
+  },
+});
+
+SavedAdsSchema.index({ user: 1, ad: 1 }, { unique: true });
+export const SavedAds = mongoose.model("savedAds", SavedAdsSchema);
+
 const ValuationsSchema = new Schema(
   {
     value: { type: Number, required: true, min: 0, max: 5 },

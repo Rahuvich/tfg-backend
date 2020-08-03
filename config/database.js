@@ -8,6 +8,8 @@ class Connection {
     console.log(`URI: ${uri}`);
 
     mongoose.set("useFindAndModify", false);
+    mongoose.set("useCreateIndex", true);
+
     mongoose
       .connect(uri, {
         useNewUrlParser: true,
