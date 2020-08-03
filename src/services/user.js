@@ -8,7 +8,7 @@ class UserService {
   async getUser(id, prettify = false) {
     const model = await this.getUserModelById(id);
     const user = await model.findById(id);
-    return prettify ? await this.populateValuations(user.id) : user;
+    return prettify ? await this.populate(user) : user;
   }
 
   async login(email, password) {
@@ -33,7 +33,7 @@ class UserService {
       }
     );
     return {
-      user: await this.populateValuations(user.id),
+      user: await this.populate(user),
       token: token,
       tokenExpiration: 1,
     };
@@ -67,7 +67,7 @@ class UserService {
       new: true,
     });
 
-    return await this.populateValuations(updatedUser.id);
+    return await this.populate(updatedUser);
   }
 
   async valuateUser(userId, data) {
@@ -96,7 +96,7 @@ class UserService {
 
     await userValuated.save();
 
-    return await this.populateValuations(userValuated.id);
+    return await this.populate(userValuated);
   }
 
   async removeValuation(userIdValuator, userIdValuated) {
@@ -108,7 +108,7 @@ class UserService {
 
     await userValuated.save();
 
-    return await this.populateValuations(userValuated.id);
+    return await this.populate(userValuated);
   }
 
   async getUserByEmail(email) {
@@ -198,13 +198,8 @@ class UserService {
     return false;
   }
 
-  // TODO Automatize this with Mongoose API
-  async populateValuations(userId) {
-    let user = await this.getUser(userId);
-    for (let i = 0; i < user.valuations.length; ++i) {
-      let id = user.valuations[i].author;
-      user.valuations[i].author = await this.getUser(id);
-    }
+  async populate(user) {
+    await user.populate("valuations.author").execPopulate();
     return user;
   }
 }
