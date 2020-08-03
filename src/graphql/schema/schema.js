@@ -17,6 +17,8 @@ interface Node {
     currentUser: User
 
     getAd(id: String!): Ad
+
+    searchAds(filters: AdFilters!) : [Ad!]
   }
 
   type Mutation{

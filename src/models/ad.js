@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 const AdSchema = new Schema(
   {
-    tags: { type: [String], required: true },
+    tags: { type: [String], required: true, index: true },
     photos: { type: [String], required: false },
   },
   {
@@ -20,6 +20,7 @@ const AnimalAdSchema = extendSchema(
       type: String,
       required: true,
       trim: true,
+      index: true,
     },
     description: {
       type: String,
@@ -80,6 +81,7 @@ const AnimalAdSchema = extendSchema(
       type: Schema.Types.ObjectId,
       refPath: "fromModel",
       required: true,
+      index: true,
     },
     fromModel: {
       type: String,
@@ -101,6 +103,7 @@ const AnimalAdSchema = extendSchema(
         "OTHER",
       ],
       trim: true,
+      index: true,
     },
     size: {
       type: String,
@@ -120,6 +123,7 @@ const ProductAdSchema = extendSchema(
       type: String,
       required: true,
       trim: true,
+      index: true,
     },
     description: {
       type: String,
@@ -130,11 +134,13 @@ const ProductAdSchema = extendSchema(
       type: Number,
       required: true,
       min: 0,
+      index: true,
     },
     creator: {
       type: Schema.Types.ObjectId,
       ref: "profesional",
       required: true,
+      index: true,
     },
   },
   {
@@ -149,6 +155,7 @@ const ServiceAdSchema = extendSchema(
       type: String,
       required: true,
       trim: true,
+      index: true,
     },
     description: {
       type: String,
@@ -159,11 +166,13 @@ const ServiceAdSchema = extendSchema(
       type: Number,
       required: true,
       min: 0,
+      index: true,
     },
     creator: {
       type: Schema.Types.ObjectId,
       refPath: "fromModel",
       required: true,
+      index: true,
     },
     fromModel: {
       type: String,

@@ -1,5 +1,6 @@
 import { AnimalAd, ProductAd, ServiceAd } from "../models/ad";
 import UserService from "./user";
+import { escapeRegex } from "../../helpers/regex";
 
 class AdService {
   constructor() {}
@@ -32,6 +33,47 @@ class AdService {
       return ad;
     }
     throw new Error("Ad does not exist");
+  }
+
+  async findFromAllModels(args) {
+    const animalList = await AnimalAd.find(args);
+    const productList = await ProductAd.find(args);
+    const serviceList = await ServiceAd.find(args);
+
+    return animalList.concat(productList).concat(serviceList);
+  }
+
+  async searchAds(filters) {
+    let query = {
+      $and: [],
+    };
+
+    let obj;
+
+    for (const prop in filters) {
+      if (filters[prop] instanceof Array) {
+        obj = {
+          tags: { $in: [] },
+        };
+
+        for (let i = 0; i < filters[prop].length; ++i) {
+          const regex = new RegExp(escapeRegex(filters[prop][i]), "i");
+          obj.tags.$in.push(regex);
+        }
+      } else if (typeof filters[prop] === "boolean") {
+        obj = {};
+        obj[prop] = filters[prop];
+      } else {
+        const regex = new RegExp(escapeRegex(filters[prop]), "i");
+
+        obj = {};
+        obj[prop] = regex;
+      }
+      query.$and.push(obj);
+    }
+
+    const list = await this.findFromAllModels(query);
+    return list.map(async (ad) => await ad.populate("creator").execPopulate());
   }
 
   // * Specific

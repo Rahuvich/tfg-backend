@@ -18,11 +18,25 @@ module.exports = {
       throw new Error(`Custom error: Ad unidentified ${data}`);
     },
   },
+  AnimalAd: {
+    __resolveType(data) {
+      if (data.type === "DOG") {
+        return "Dog";
+      } else return "OtherAnimal";
+    },
+  },
 
   Query: {
     getAd: async (_, { id }) => {
       try {
         return await AdService.getAd(id);
+      } catch (err) {
+        throw err;
+      }
+    },
+    searchAds: async (_, { filters }) => {
+      try {
+        return await AdService.searchAds(filters);
       } catch (err) {
         throw err;
       }

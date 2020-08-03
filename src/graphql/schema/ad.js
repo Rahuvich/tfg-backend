@@ -107,6 +107,17 @@ input ServiceAdInput {
     size: DogSize
   }
 
+  input AdFilters {
+    name: String,
+    tags: [String!],
+    breed: String,
+    size: DogSize,
+    deliveryInfo: [DeliveryStatus!],
+    male: Boolean,
+    activityLevel: ActivityLevel,
+    type: AnimalType,
+  }
+
 
 interface Ad implements Node{
     _id: ID!
