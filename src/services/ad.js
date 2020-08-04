@@ -1,11 +1,53 @@
 import { AnimalAd, ProductAd, ServiceAd } from "../models/ad";
 import UserService from "./user";
+import PaginationService from "./pagination";
 import { escapeRegex } from "../../helpers/regex";
 
 class AdService {
   constructor() {}
 
   // * General
+
+  async getAds(first, after) {
+    const adList = await AnimalAd.find().sort({ createdAt: "desc" });
+    const allEdges = adList.map((ad) => {
+      return {
+        node: ad,
+        cursor: Buffer.from(ad.id.toString()).toString("base64"),
+      };
+    });
+
+    const edges = PaginationService.edgesToReturn(
+      allEdges,
+      null,
+      after,
+      first,
+      null
+    );
+
+    return {
+      edges: edges,
+      totalCount: edges.length,
+      pageInfo: {
+        hasNextPage: PaginationService.hasNextPage(
+          allEdges,
+          null,
+          after,
+          first,
+          null
+        ),
+        hasPreviousPage: PaginationService.hasPreviousPage(
+          allEdges,
+          null,
+          after,
+          first,
+          null
+        ),
+        startCursor: edges[0].cursor,
+        endCursor: edges[edges.length - 1].cursor,
+      },
+    };
+  }
 
   async isUserCreatorOfAd(userId, adId) {
     let ad = await this.getAd(adId);

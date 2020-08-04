@@ -20,6 +20,8 @@ interface Node {
     searchAds(filters: AdFilters!) : [Ad!]
 
     getCloseShelters(fromAddress: String) : [DistanceData!]
+
+    ads(first: Int!, after: String) : AdConnection!
   }
 
   type Mutation{

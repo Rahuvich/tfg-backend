@@ -6,6 +6,7 @@ import { graphqlHTTP } from "express-graphql";
 
 import { typeDef as userTypes } from "./graphql/schema/user";
 import { typeDef as adTypes } from "./graphql/schema/ad";
+import { typeDef as paginationTypes } from "./graphql/schema/pagination";
 import typeDefs from "./graphql/schema/schema";
 
 import graphQlResolvers from "./graphql/resolvers/resolvers";
@@ -15,7 +16,7 @@ import isAuth from "../middleware/is_auth";
 app.use(express.json());
 
 const schema = makeExecutableSchema({
-  typeDefs: [typeDefs, adTypes, userTypes],
+  typeDefs: [typeDefs, adTypes, userTypes, paginationTypes],
   resolvers: graphQlResolvers,
 });
 

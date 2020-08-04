@@ -41,6 +41,13 @@ module.exports = {
         throw err;
       }
     },
+    ads: async (_, { first, after }) => {
+      try {
+        return await AdService.getAds(first, after);
+      } catch (err) {
+        throw err;
+      }
+    },
   },
 
   Mutation: {
