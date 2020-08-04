@@ -18,8 +18,18 @@ module.exports = {
   },
 
   Query: {
-    helloWorld: () => {
-      return "Hello world";
+    getCloseShelters: async (_, { fromAddress }, req) => {
+      if (!req.isAuth && !fromAddress) {
+        throw new Error("You must be logged in");
+      }
+      try {
+        if (!req.isAuth || fromAddress) {
+          return await UserService.getCloseShelters(fromAddress);
+        } else {
+          const user = await UserService.getUser(req.userId);
+          return await UserService.getCloseShelters(user.address);
+        }
+      } catch (err) {}
     },
     currentUser: async (_, context, req) => {
       if (!req.isAuth) {

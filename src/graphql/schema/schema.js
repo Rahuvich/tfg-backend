@@ -11,7 +11,6 @@ interface Node {
 
 
   type Query {
-    helloWorld: String!
     login(email: String!, password: String!): AuthData!
     getUser(id: String!): User
     currentUser: User
@@ -19,6 +18,8 @@ interface Node {
     getAd(id: String!): Ad
 
     searchAds(filters: AdFilters!) : [Ad!]
+
+    getCloseShelters(fromAddress: String) : [DistanceData!]
   }
 
   type Mutation{

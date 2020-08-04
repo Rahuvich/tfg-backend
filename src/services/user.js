@@ -2,10 +2,48 @@ import bcrypt from "bcryptjs";
 import { Protectora, Profesional, Particular, SavedAds } from "../models/user";
 import jwt from "jsonwebtoken";
 import AdService from "./ad";
-import mongoose from "mongoose";
+import { Client, Status } from "@googlemaps/google-maps-services-js";
+import { json } from "express";
+import util from "util";
 
 class UserService {
-  constructor() {}
+  constructor() {
+    this.mapService = new Client({});
+  }
+
+  async getCloseShelters(fromAddress) {
+    const shelters = await Protectora.find();
+
+    const result = await this.mapService.distancematrix({
+      params: {
+        origins: [fromAddress],
+        destinations: shelters.map((protectora) => protectora.address),
+        key: process.env.GOOGLE_API_KEY,
+      },
+    });
+
+    var distanceData = [];
+
+    if (result.data.status === "OK") {
+      for (var i = 0; i < result.data.rows.length; i++) {
+        for (var j = 0; j < result.data.rows[i].elements.length; j++) {
+          if (result.data.rows[i].elements[j].status === "OK") {
+            distanceData.push({
+              protectora: shelters[i + j],
+              distance: result.data.rows[i].elements[j].distance.value,
+              travelTime: result.data.rows[i].elements[j].duration.value,
+            });
+          } /* else {
+            shelters.splice(i + j, 1);
+          } */
+        }
+      }
+    } else {
+      throw new Error("Error thrown by Google API");
+    }
+
+    return distanceData.sort((a, b) => a.travelTime - b.travelTime);
+  }
 
   async saveAd(userId, adId) {
     const user = await this.getUser(userId);

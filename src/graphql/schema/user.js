@@ -6,6 +6,12 @@ type AuthData {
     tokenExpiration: Int!
   }
 
+  type DistanceData {
+    protectora: Protectora!
+    distance: Int!
+    travelTime: Int!
+  }
+
 
 enum UserType {
     PARTICULAR
