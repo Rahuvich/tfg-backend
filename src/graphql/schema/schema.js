@@ -1,5 +1,3 @@
-//! https://www.apollographql.com/blog/modularizing-your-graphql-schema-code-d7f71d5ed5f2/
-
 const typeDefs = `
 scalar Date
 
@@ -14,6 +12,7 @@ interface Node {
     login(email: String!, password: String!): AuthData!
     getUser(id: String!): User
     currentUser: User
+    myRooms : [Room!]
 
     getAd(id: String!): Ad
 
@@ -45,6 +44,8 @@ interface Node {
 
     saveAd(id: String!): [Ad!]
     unsaveAd(id: String!): [Ad!]
+
+    createMessage(toUser: String!, text: String!, ad: String) : Message!
   }
 `;
 module.exports = typeDefs;

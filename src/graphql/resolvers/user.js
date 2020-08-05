@@ -29,7 +29,9 @@ module.exports = {
           const user = await UserService.getUser(req.userId);
           return await UserService.getCloseShelters(user.address);
         }
-      } catch (err) {}
+      } catch (err) {
+        throw err;
+      }
     },
     currentUser: async (_, context, req) => {
       if (!req.isAuth) {

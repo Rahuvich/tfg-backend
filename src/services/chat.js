@@ -1,0 +1,69 @@
+import { Message, Room } from "../models/chat";
+import UserService from "../services/user";
+import AdService from "../services/ad";
+import util from "util";
+
+class ChatService {
+  constructor() {}
+
+  async createMessage(fromId, toId, text, ad) {
+    const fromUser = await UserService.getUser(fromId);
+    const toUser = await UserService.getUser(toId);
+
+    if (!fromUser || !toUser) throw new Error("Message lacks users");
+    if (!text) throw new Error("Message needs text");
+
+    const message = await Message({
+      text: text,
+      ad: ad ? await AdService.getAd(ad) : undefined,
+      adFromModel: ad ? ad.constructor.modelName : undefined,
+      sender: fromUser,
+      fromModel: fromUser.constructor.modelName,
+    }).save();
+
+    let room = await this.getRoom(fromId, toId);
+
+    if (!room) {
+      room = await this.createRoom(fromUser, toUser, message);
+    } else {
+      room.messages.push(message);
+      await room.save();
+    }
+
+    return message;
+  }
+
+  async getUserRooms(userId) {
+    let rooms = await Room.find({
+      $or: [{ user1: userId }, { user2: userId }],
+    }).populate("user1 user2 messages");
+
+    rooms = await rooms.map(
+      async (room) =>
+        await room.populate("messages.sender messenger.ad").execPopulate()
+    );
+
+    return rooms;
+  }
+
+  async getRoom(fromId, toId) {
+    return await Room.findOne({
+      $or: [
+        { user1: fromId, user2: toId },
+        { user1: toId, user2: fromId },
+      ],
+    });
+  }
+
+  async createRoom(fromUser, toUser, message) {
+    return await Room({
+      user1: fromUser,
+      user1FromModel: fromUser.constructor.modelName,
+      user2: toUser,
+      user2FromModel: toUser.constructor.modelName,
+      messages: [message],
+    }).save();
+  }
+}
+
+export default new ChatService();

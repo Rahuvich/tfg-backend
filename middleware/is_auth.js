@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import util from "util";
 
 module.exports = (req, res, next) => {
   const authHeader = req.get("Authorization");
