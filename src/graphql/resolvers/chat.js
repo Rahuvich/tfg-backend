@@ -1,4 +1,4 @@
-import { withFilter } from "graphql-subscriptions";
+import { withFilter } from "apollo-server";
 import ChatService from "../../services/chat";
 import util from "util";
 
@@ -31,7 +31,7 @@ module.exports = {
           ad
         );
 
-        await req.pubsub.publish(CREATE_MESSAGE, { messageSent: msg });
+        await req.pubsub.publish(CREATE_MESSAGE, msg);
 
         return msg;
       } catch (err) {
@@ -42,13 +42,20 @@ module.exports = {
 
   Subscription: {
     messageSent: {
-      subscribe: (_, args, req) => req.pubsub.asyncIterator(CREATE_MESSAGE),
-      /* subscribe: withFilter(
+      subscribe: withFilter(
         (_, args, req) => req.pubsub.asyncIterator(CREATE_MESSAGE),
-        (result, args, context, info) => true
-      ), */
+        async (result, { roomId }, req, info) => {
+          if (!req.isAuth) {
+            throw new Error("You must be logged in");
+          }
+          try {
+            return await ChatService.isUserRoom(req.userId, roomId);
+          } catch (err) {
+            throw err;
+          }
+        }
+      ),
       resolve: (result, args, context, info) => {
-        console.log(result);
         return result;
       },
     },

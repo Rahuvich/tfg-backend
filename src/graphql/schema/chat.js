@@ -1,5 +1,7 @@
 export const typeDef = `
-    type Room {
+    type Room implements Node{
+        _id: ID!
+
         user1: User!
         user2: User!
         messages: [Message!]
@@ -8,7 +10,9 @@ export const typeDef = `
         updatedAt: Date
     }
 
-    type Message {
+    type Message implements Node{
+        _id: ID!
+
         text: String!
         ad: Ad
         sender: User!
@@ -18,7 +22,7 @@ export const typeDef = `
     }
   
     type Subscription {
-        messageSent : Message
+        messageSent (roomId: String!) : Message
     }
 
 `;

@@ -1,7 +1,42 @@
 import jwt from "jsonwebtoken";
 import util from "util";
 
-module.exports = (req, res, next) => {
+const webSocketAuth = (connectionParams, webSocket) => {
+  if (!connectionParams["Authorization"]) {
+    return {
+      isAuth: false,
+    };
+  }
+  const token = connectionParams["Authorization"].split(" ")[1];
+
+  if (!token || token === "") {
+    return {
+      isAuth: false,
+    };
+  }
+
+  let decodedToken;
+
+  try {
+    decodedToken = jwt.verify(token, "someSuperSecretKey");
+  } catch (err) {
+    return {
+      isAuth: false,
+    };
+  }
+
+  if (!decodedToken) {
+    return {
+      isAuth: false,
+    };
+  }
+
+  return {
+    isAuth: true,
+    userId: decodedToken.userId,
+  };
+};
+const httpAuth = (req, res, next) => {
   const authHeader = req.get("Authorization");
   if (!authHeader) {
     req.isAuth = false;
@@ -32,3 +67,6 @@ module.exports = (req, res, next) => {
   req.userId = decodedToken.userId;
   return next();
 };
+
+export const WebSocketAuth = webSocketAuth;
+export const HttpAuth = httpAuth;
