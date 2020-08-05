@@ -10,7 +10,7 @@ import typeDefs from "./graphql/schema/schema";
 import graphQlResolvers from "./graphql/resolvers/resolvers";
 import { makeExecutableSchema } from "apollo-server";
 import { ApolloServer } from "apollo-server-express";
-import isAuth from "../middleware/is_auth";
+import { HttpAuth, WebSocketAuth } from "../middleware/is_auth";
 import { PubSub } from "apollo-server";
 
 // * Subscriptions
@@ -25,45 +25,21 @@ const schema = makeExecutableSchema({
   resolvers: graphQlResolvers,
 });
 
-/* const validateToken = (authToken) => {
-  // ... validate token and return a Promise, rejects in case of an error
-};
-
-const findUser = (authToken) => {
-  return (tokenValidationResult) => {
-    // ... finds user by auth token and return a Promise, rejects in case of an error
-  };
-}; */
-
 const server = new ApolloServer({
   schema,
   context: async ({ req, connection }) => {
     if (connection) {
-      console.log("Websocket");
       return { ...connection.context, pubsub };
     } else {
-      console.log("Http");
       return { ...req, pubsub };
     }
   },
   subscriptions: {
-    onConnect: (connectionParams, webSocket) => {
-      if (connectionParams.authToken) {
-        return validateToken(connectionParams.authToken)
-          .then(findUser(connectionParams.authToken))
-          .then((user) => {
-            return {
-              currentUser: user,
-            };
-          });
-      }
-
-      throw new Error("Missing auth token!");
-    },
+    onConnect: WebSocketAuth,
   },
 });
 
-app.use(isAuth);
+app.use(HttpAuth);
 
 server.applyMiddleware({ app });
 
@@ -71,10 +47,8 @@ const httpServer = createServer(app);
 server.installSubscriptionHandlers(httpServer);
 
 httpServer.listen(PORT, () => {
+  console.log(`Server ready at http://localhost:${PORT}${server.graphqlPath}`);
   console.log(
-    `🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`
-  );
-  console.log(
-    `🚀 Subscriptions ready at ws://localhost:${PORT}${server.subscriptionsPath}`
+    `Subscriptions ready at ws://localhost:${PORT}${server.subscriptionsPath}`
   );
 });

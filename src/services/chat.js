@@ -38,7 +38,7 @@ class ChatService {
       $or: [{ user1: userId }, { user2: userId }],
     }).populate("user1 user2 messages");
 
-    rooms = await rooms.map(
+    rooms = rooms.map(
       async (room) =>
         await room.populate("messages.sender messenger.ad").execPopulate()
     );
@@ -63,6 +63,16 @@ class ChatService {
       user2FromModel: toUser.constructor.modelName,
       messages: [message],
     }).save();
+  }
+
+  async isUserRoom(userId, roomId) {
+    const room = await Room.findById(roomId);
+    if (!room) throw new Error("Room does not exists");
+
+    if (room.user1.toString() === userId || room.user2.toString() === userId) {
+      return true;
+    }
+    return true;
   }
 }
 
