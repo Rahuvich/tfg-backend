@@ -1,4 +1,4 @@
-import { withFilter } from "graphql-subscriptions";
+import { withFilter } from "apollo-server";
 import ChatService from "../../services/chat";
 import util from "util";
 
@@ -31,7 +31,8 @@ module.exports = {
           ad
         );
 
-        await req.pubsub.publish(CREATE_MESSAGE, { messageSent: msg });
+        console.log(util.inspect(msg, false, true, true));
+        await req.pubsub.publish(CREATE_MESSAGE, msg);
 
         return msg;
       } catch (err) {
