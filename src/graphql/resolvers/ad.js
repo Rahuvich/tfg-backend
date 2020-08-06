@@ -1,6 +1,6 @@
 import { AnimalAd, ProductAd, ServiceAd } from "../../models/ad";
 import AdService from "../../services/ad";
-import { uploadTo, destroyTo } from "../../../helpers/image_uploader";
+import CloudinaryService from "../../services/cloudinary";
 
 module.exports = {
   Ad: {
@@ -24,6 +24,66 @@ module.exports = {
       if (data.type === "DOG") {
         return "Dog";
       } else return "OtherAnimal";
+    },
+  },
+  Dog: {
+    photos: async (obj, { options }, context, info) => {
+      var list = [];
+      for (var str in obj.photos) {
+        var parts = str.split("users/");
+        list.push(
+          await CloudinaryService.getImage(
+            `users/${parts[parts.length - 1]}`,
+            options
+          )
+        );
+      }
+      return list;
+    },
+  },
+  OtherAnimal: {
+    photos: async (obj, { options }, context, info) => {
+      var list = obj.photos;
+      for (var str in list) {
+        var parts = str.split("users/");
+        list.push(
+          await CloudinaryService.getImage(
+            `users/${parts[parts.length - 1]}`,
+            options
+          )
+        );
+      }
+      return list;
+    },
+  },
+  ProductAd: {
+    photos: async (obj, { options }, context, info) => {
+      var list = obj.photos;
+      for (var str in list) {
+        var parts = str.split("users/");
+        list.push(
+          await CloudinaryService.getImage(
+            `users/${parts[parts.length - 1]}`,
+            options
+          )
+        );
+      }
+      return list;
+    },
+  },
+  ServiceAd: {
+    photos: async (obj, { options }, context, info) => {
+      var list = obj.photos;
+      for (var str in list) {
+        var parts = str.split("users/");
+        list.push(
+          await CloudinaryService.getImage(
+            `users/${parts[parts.length - 1]}`,
+            options
+          )
+        );
+      }
+      return list;
     },
   },
 

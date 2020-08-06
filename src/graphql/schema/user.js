@@ -20,6 +20,7 @@ enum UserType {
   }
 
 
+
 input UserInput {
     type: UserType!
     name: String!
@@ -55,6 +56,8 @@ type Valuation {
     author: User!
   }
 
+  
+
   interface User implements Node{
     _id: ID!
 
@@ -62,7 +65,7 @@ type Valuation {
     email: String!
     address: String!
     phone: Int!
-    thumbnail: String
+    thumbnail(options: ImageOptions): String
     valuations: [Valuation!]
 
     createdAt: Date!
@@ -76,7 +79,7 @@ type Valuation {
     email: String!
     address: String!
     phone: Int!
-    thumbnail: String
+    thumbnail(options: ImageOptions): String
     valuations: [Valuation!]
 
     web: String
@@ -92,7 +95,7 @@ type Valuation {
     email: String!
     address: String!
     phone: Int!
-    thumbnail: String
+    thumbnail(options: ImageOptions): String
     valuations: [Valuation!]
 
     web: String
@@ -108,7 +111,7 @@ type Valuation {
     email: String!
     address: String!
     phone: Int!
-    thumbnail: String
+    thumbnail(options: ImageOptions): String
     valuations: [Valuation!]
 
     createdAt: Date!

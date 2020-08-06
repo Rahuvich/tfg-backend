@@ -3,6 +3,7 @@ import UserService from "../../services/user";
 import CloudinaryService from "../../services/cloudinary";
 import util from "util";
 import { uploadTo, destroyTo } from "../../../helpers/image_uploader";
+import { Console } from "console";
 
 module.exports = {
   User: {
@@ -17,6 +18,36 @@ module.exports = {
         return "Protectora";
       }
       return null;
+    },
+  },
+  Particular: {
+    thumbnail: async (obj, { options }, context, info) => {
+      var str = obj.thumbnail;
+      var parts = str.split("users/");
+      return await CloudinaryService.getImage(
+        `users/${parts[parts.length - 1]}`,
+        options
+      );
+    },
+  },
+  Protectora: {
+    thumbnail: async (obj, { options }, context, info) => {
+      var str = obj.thumbnail;
+      var parts = str.split("users/");
+      return await CloudinaryService.getImage(
+        `users/${parts[parts.length - 1]}`,
+        options
+      );
+    },
+  },
+  Profesional: {
+    thumbnail: async (obj, { options }, context, info) => {
+      var str = obj.thumbnail;
+      var parts = str.split("users/");
+      return await CloudinaryService.getImage(
+        `users/${parts[parts.length - 1]}`,
+        options
+      );
     },
   },
 

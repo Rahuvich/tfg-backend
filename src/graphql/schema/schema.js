@@ -8,11 +8,33 @@ interface Node {
     updatedAt: Date
 }
 
+enum Crop {
+  scale
+  fit
+  fill
+  crop
+  thumb
+}
+
+enum Gravity {
+  faces
+  center
+}
+
+
+input ImageOptions {
+  height: Int
+  width: Int
+  crop: Crop
+  gravity: Gravity
+}
+
 
   type Query {
     login(email: String!, password: String!): AuthData!
     getUser(id: String!): User
     currentUser: User
+    
     myRooms : [Room!]
 
     getAd(id: String!): Ad

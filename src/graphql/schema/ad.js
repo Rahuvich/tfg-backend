@@ -125,7 +125,7 @@ interface Ad implements Node{
 
       
       tags: [String!]!
-      photos: [String]
+      photos(options: ImageOptions): [String]
       creator: User!
 
       createdAt: Date!
@@ -137,7 +137,7 @@ type ProductAd implements Ad & Node{
 
       
       tags: [String!]!
-      photos: [String]
+      photos(options: ImageOptions): [String]
       creator: User!
 
     title: String!
@@ -152,7 +152,7 @@ type ServiceAd implements Ad & Node{
 
       
       tags: [String!]!
-      photos: [String]
+      photos(options: ImageOptions): [String]
       creator: User!
 
     title: String!
@@ -168,7 +168,7 @@ interface AnimalAd implements Ad & Node{
 
       
     tags: [String!]!
-    photos: [String]
+    photos(options: ImageOptions): [String]
     creator: User!
       
     name: String!
@@ -192,7 +192,7 @@ type Dog implements AnimalAd & Ad & Node{
 
       
     tags: [String!]!
-    photos: [String]
+    photos(options: ImageOptions): [String]
     creator: User!
       
     name: String!
@@ -217,7 +217,7 @@ type OtherAnimal implements AnimalAd & Ad & Node{
     _id: ID!
       
     tags: [String!]!
-    photos: [String]
+    photos(options: ImageOptions): [String]
     creator: User!
       
     name: String!

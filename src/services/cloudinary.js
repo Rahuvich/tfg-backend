@@ -25,6 +25,10 @@ class CloudinaryService {
     return await destroyTo(this.cloudinary, `users/${email}/thumbnail`);
   }
 
+  async getImage(id, options) {
+    return this.cloudinary.url(id, options);
+  }
+
   async updateAdImages(files, email, index, oldLength) {
     await this.deleteAdImages(email, index, oldLength);
     return await this.uploadAdImages(files, email, index);
