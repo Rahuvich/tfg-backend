@@ -1,5 +1,8 @@
 import { Profesional, Protectora, Particular } from "../../models/user";
 import UserService from "../../services/user";
+import CloudinaryService from "../../services/cloudinary";
+import util from "util";
+import { uploadTo, destroyTo } from "../../../helpers/image_uploader";
 
 module.exports = {
   User: {
@@ -104,16 +107,18 @@ module.exports = {
       if (!req.isAuth) {
         throw new Error("You must be logged in");
       }
+
       try {
         return await UserService.updateUser(req.userId, userInput);
       } catch (err) {
         throw err;
       }
     },
-    createUser: async (_, { userInput }) => {
+    createUser: async (_, { userInput }, req) => {
       try {
         return await UserService.createUser(userInput);
       } catch (err) {
+        CloudinaryService.deleteUserImage(userInput.email);
         throw err;
       }
     },

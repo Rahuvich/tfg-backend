@@ -36,7 +36,7 @@ enum DeliveryStatus {
 
 input ServiceAdInput {
     tags: [String!]!
-    photos: [String]
+    photos: [Upload!]!
     title: String!
     priceHour: Float!
     description: String!
@@ -45,7 +45,7 @@ input ServiceAdInput {
   input ServiceAdInputOptional {
     _id: ID!
     tags: [String!]
-    photos: [String]
+    photos: [Upload!]
     title: String
     priceHour: Float
     description: String
@@ -54,7 +54,7 @@ input ServiceAdInput {
 
   input ProductAdInput {
     tags: [String!]!
-    photos: [String]
+    photos: [Upload!]!
     title: String!
     price: Float!
     description: String!
@@ -63,7 +63,7 @@ input ServiceAdInput {
   input ProductAdInputOptional {
     _id: ID!
     tags: [String!]
-    photos: [String]
+    photos: [Upload!]
     title: String
     price: Float
     description: String
@@ -73,7 +73,7 @@ input ServiceAdInput {
   input AnimalAdInput {
     type: AnimalType
     tags: [String!]!
-    photos: [String]
+    photos: [Upload!]!
     name: String!
     description: String!
     activityLevel: ActivityLevel!
@@ -92,7 +92,7 @@ input ServiceAdInput {
     _id: ID!
     type: AnimalType
     tags: [String!]
-    photos: [String]
+    photos: [Upload!]
     name: String
     description: String
     activityLevel: ActivityLevel

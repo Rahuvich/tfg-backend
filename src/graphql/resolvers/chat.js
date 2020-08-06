@@ -1,6 +1,5 @@
 import { withFilter } from "apollo-server";
 import ChatService from "../../services/chat";
-import util from "util";
 
 const CREATE_MESSAGE = "CREATE_MESSAGE";
 

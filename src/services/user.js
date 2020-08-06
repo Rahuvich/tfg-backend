@@ -3,8 +3,7 @@ import { Protectora, Profesional, Particular, SavedAds } from "../models/user";
 import jwt from "jsonwebtoken";
 import AdService from "./ad";
 import { Client, Status } from "@googlemaps/google-maps-services-js";
-import { json } from "express";
-import util from "util";
+import CloudinaryService from "./cloudinary";
 
 class UserService {
   constructor() {
@@ -121,11 +120,13 @@ class UserService {
       throw new Error("Email already in use");
     }
 
-    const hashedPassword = await bcrypt.hash(data.password, 12);
-
     const newData = {
       ...data,
-      password: hashedPassword,
+      password: await bcrypt.hash(data.password, 12),
+      thumbnail: await CloudinaryService.uploadUserImage(
+        data.thumbnail,
+        data.email
+      ),
     };
 
     const model = await this.getUserModelByType(newData.type);
@@ -137,6 +138,16 @@ class UserService {
   async updateUser(userId, newData) {
     if (newData.email && (await this.isEmailAlreadyInUse(newData.email))) {
       throw new Error("Email already in use");
+    }
+
+    if (newData.thumbnail) {
+      const email = newData.email
+        ? newData.email
+        : (await this.getUser(userId)).email;
+      newData.thumbnail = await CloudinaryService.uploadUserImage(
+        newData.thumbnail,
+        email
+      );
     }
 
     const model = await this.getUserModelById(userId);
@@ -273,6 +284,11 @@ class UserService {
       return true;
     }
     return false;
+  }
+
+  async delete(id) {
+    const model = await this.getUserModelById(id);
+    return await model.findByIdAndDelete(id);
   }
 
   async populate(user) {

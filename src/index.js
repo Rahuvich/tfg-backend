@@ -15,10 +15,12 @@ import { PubSub } from "apollo-server";
 
 // * Subscriptions
 import { createServer } from "http";
+import util from "util";
 
-const pubsub = new PubSub();
 const app = express();
 const PORT = process.env.PORT || 3030;
+
+const pubsub = new PubSub();
 
 const schema = makeExecutableSchema({
   typeDefs: [typeDefs, adTypes, userTypes, paginationTypes, chatTypes],

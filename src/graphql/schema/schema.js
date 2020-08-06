@@ -1,5 +1,6 @@
 const typeDefs = `
 scalar Date
+scalar Upload
 
 interface Node {
     _id: ID!

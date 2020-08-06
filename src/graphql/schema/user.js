@@ -25,6 +25,7 @@ input UserInput {
     name: String!
     address: String!
     phone: Int!
+    thumbnail: Upload!
     email: String!
     password: String!
     web: String
@@ -35,6 +36,7 @@ input UserInput {
     address: String
     phone: Int
     email: String
+    thumbnail: Upload
     password: String
     web: String
   }

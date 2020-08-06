@@ -6,7 +6,7 @@ const Schema = mongoose.Schema;
 const AdSchema = new Schema(
   {
     tags: { type: [String], required: true, index: true },
-    photos: { type: [String], required: false },
+    photos: { type: [String], required: true },
   },
   {
     timestamps: true,

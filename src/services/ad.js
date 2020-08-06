@@ -2,6 +2,7 @@ import { AnimalAd, ProductAd, ServiceAd } from "../models/ad";
 import UserService from "./user";
 import PaginationService from "./pagination";
 import { escapeRegex } from "../../helpers/regex";
+import CloudinaryService from "./cloudinary";
 
 class AdService {
   constructor() {}
@@ -118,32 +119,69 @@ class AdService {
     }
 
     const list = await this.findFromAllModels(query);
-    return list.map(async (ad) => await ad.populate("creator").execPopulate());
+    return await Promise.all(
+      list.map(async (ad) => await ad.populate("creator").execPopulate())
+    );
+  }
+
+  async getIndexAdFromUser(userId, adId) {
+    const ads = await this.searchAds({ creator: userId });
+
+    const orderedList = ads.sort((ad, ad2) => ad.createdAt < ad2.createdAt);
+
+    const index = orderedList.findIndex((ad) => ad.id === adId);
+
+    return index < 0 ? orderedList.length : index;
   }
 
   // * Specific
 
   // Animal
-  async deleteAnimalAd(id) {
-    return await AnimalAd.findByIdAndDelete(id).populate("creator");
+  async deleteAnimalAd(userId, adId) {
+    const ad = await AnimalAd.findByIdAndDelete(adId).populate("creator");
+
+    CloudinaryService.deleteAdImages(
+      (await UserService.getUser(userId)).email,
+      await this.getIndexAdFromUser(userId, adId),
+      ad.photos.length
+    );
+
+    return ad;
   }
 
-  async updateAnimalAd(adInput) {
+  async updateAnimalAd(userId, adInput) {
     const data = { ...adInput };
+
+    if (data.photos) {
+      data.photos = await CloudinaryService.updateAdImages(
+        data.photos,
+        (await UserService.getUser(userId)).email,
+        await this.getIndexAdFromUser(userId, data._id),
+        (await this.getAd(data._id)).photos.length
+      );
+    }
+
+    var deleteSize = false;
+    if (data.type) {
+      if (data.type === "DOG") {
+        if (!("size" in data)) {
+          throw new Error("Dogs ads must specify size field");
+        }
+      } else {
+        deleteSize = true;
+        if ("size" in data) {
+          data.size = undefined;
+        }
+      }
+    }
 
     const ad = await AnimalAd.findByIdAndUpdate(data._id, data, {
       new: true,
     }).populate("creator");
 
-    if (data.type === "DOG") {
-      if (!("size" in data)) {
-        throw new Error("Dogs ads must specify size field");
-      }
-    } else {
-      if ("size" in ad) {
-        ad.size = undefined;
-        await ad.save();
-      }
+    if (deleteSize) {
+      ad.size = undefined;
+      await ad.save();
     }
 
     return ad;
@@ -158,7 +196,14 @@ class AdService {
       throw new Error("Profesionals can not create an animal ad");
     }
 
-    const data = { ...adInput };
+    const data = {
+      ...adInput,
+      photos: await CloudinaryService.uploadAdImages(
+        adInput.photos,
+        user.email,
+        await this.getIndexAdFromUser(userId)
+      ),
+    };
 
     if (data.type === "DOG") {
       if (!("size" in data)) {
@@ -184,7 +229,14 @@ class AdService {
       throw new Error("Only profesionals can not create a product ad");
     }
 
-    const data = { ...adInput };
+    const data = {
+      ...adInput,
+      photos: await CloudinaryService.uploadAdImages(
+        adInput.photos,
+        user.email,
+        await this.getIndexAdFromUser(userId)
+      ),
+    };
 
     data.creator = user;
     data.fromModel = user.constructor.modelName;
@@ -193,7 +245,16 @@ class AdService {
     return ad;
   }
 
-  async updateProductAd(data) {
+  async updateProductAd(userId, data) {
+    if (data.photos) {
+      data.photos = await CloudinaryService.updateAdImages(
+        data.photos,
+        (await UserService.getUser(userId)).email,
+        await this.getIndexAdFromUser(userId, data._id),
+        (await this.getAd(data._id)).photos.length
+      );
+    }
+
     const ad = await ProductAd.findByIdAndUpdate(data._id, data, {
       new: true,
     }).populate("creator");
@@ -201,16 +262,41 @@ class AdService {
     return ad;
   }
 
-  async deleteProductAd(id) {
-    return await ProductAd.findByIdAndDelete(id).populate("creator");
+  async deleteProductAd(userId, adId) {
+    const ad = await ProductAd.findByIdAndDelete(adId).populate("creator");
+
+    CloudinaryService.deleteAdImages(
+      (await UserService.getUser(userId)).email,
+      await this.getIndexAdFromUser(userId, adId),
+      ad.photos.length
+    );
+
+    return ad;
   }
 
   // Service
-  async deleteServiceAd(id) {
-    return await ServiceAd.findByIdAndDelete(id).populate("creator");
+  async deleteServiceAd(userId, adId) {
+    const ad = await ServiceAd.findByIdAndDelete(adId).populate("creator");
+
+    CloudinaryService.deleteAdImages(
+      (await UserService.getUser(userId)).email,
+      await this.getIndexAdFromUser(userId, adId),
+      ad.photos.length
+    );
+
+    return ad;
   }
 
-  async updateServiceAd(data) {
+  async updateServiceAd(userId, data) {
+    if (data.photos) {
+      data.photos = await CloudinaryService.updateAdImages(
+        data.photos,
+        (await UserService.getUser(userId)).email,
+        await this.getIndexAdFromUser(userId, data._id),
+        (await this.getAd(data._id)).photos.length
+      );
+    }
+
     const ad = await ServiceAd.findByIdAndUpdate(data._id, data, {
       new: true,
     }).populate("creator");
@@ -226,7 +312,14 @@ class AdService {
       throw new Error("Protectoras can not create a service ad");
     }
 
-    const data = { ...adInput };
+    const data = {
+      ...adInput,
+      photos: await CloudinaryService.uploadAdImages(
+        adInput.photos,
+        user.email,
+        await this.getIndexAdFromUser(userId)
+      ),
+    };
 
     data.creator = user;
     data.fromModel = user.constructor.modelName;

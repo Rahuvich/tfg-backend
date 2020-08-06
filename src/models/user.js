@@ -52,6 +52,7 @@ const ValuationsSchema = new Schema(
 const UserSchema = new Schema(
   {
     name: { type: String, required: true, trim: true },
+    thumbnail: { type: String, trim: true },
     email: { type: String, required: true, trim: true },
     address: { type: String, required: true, trim: true },
     phone: { type: Number, required: true },

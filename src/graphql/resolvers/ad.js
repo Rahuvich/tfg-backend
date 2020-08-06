@@ -1,5 +1,6 @@
 import { AnimalAd, ProductAd, ServiceAd } from "../../models/ad";
 import AdService from "../../services/ad";
+import { uploadTo, destroyTo } from "../../../helpers/image_uploader";
 
 module.exports = {
   Ad: {
@@ -72,7 +73,7 @@ module.exports = {
       }
 
       try {
-        return await AdService.updateAnimalAd(adInput);
+        return await AdService.updateAnimalAd(req.userId, adInput);
       } catch (err) {
         throw err;
       }
@@ -85,7 +86,7 @@ module.exports = {
       }
 
       try {
-        return await AdService.deleteAnimalAd(id);
+        return await AdService.deleteAnimalAd(req.userId, id);
       } catch (err) {
         throw err;
       }
@@ -112,7 +113,7 @@ module.exports = {
       }
 
       try {
-        return await AdService.updateProductAd(adInput);
+        return await AdService.updateProductAd(req.userId, adInput);
       } catch (err) {
         throw err;
       }
@@ -125,7 +126,7 @@ module.exports = {
       }
 
       try {
-        return await AdService.deleteProductAd(id);
+        return await AdService.deleteProductAd(req.userId, id);
       } catch (err) {
         throw err;
       }
@@ -152,7 +153,7 @@ module.exports = {
       }
 
       try {
-        return await AdService.updateServiceAd(adInput);
+        return await AdService.updateServiceAd(req.userId, adInput);
       } catch (err) {
         throw err;
       }
@@ -165,7 +166,7 @@ module.exports = {
       }
 
       try {
-        return await AdService.deleteServiceAd(id);
+        return await AdService.deleteServiceAd(req.userId, id);
       } catch (err) {
         throw err;
       }
