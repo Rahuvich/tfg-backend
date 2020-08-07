@@ -8,9 +8,50 @@ class AdService {
   constructor() {}
 
   // * General
+  async getLastestFromCategory(category, address) {
+    switch (category) {
+      case "SHELTERS":
+        if (!address) return [];
+        return await UserService.getCloseShelters(address);
+      case "PRODUCTS":
+        return await ProductAd.find().sort({ createdAt: "desc" });
+      case "SERVICES":
+        return await ServiceAd.find().sort({ createdAt: "desc" });
+      case "DOG":
+        return await AnimalAd.find({ type: "DOG" }).sort({ createdAt: "desc" });
+      case "CAT":
+        return await AnimalAd.find({ type: "CAT" }).sort({ createdAt: "desc" });
+      case "BIRD":
+        return await AnimalAd.find({ type: "BIRD" }).sort({
+          createdAt: "desc",
+        });
+      case "RODENT":
+        return await AnimalAd.find({ type: "RODENT" }).sort({
+          createdAt: "desc",
+        });
+      case "FISH":
+        return await AnimalAd.find({ type: "FISH" }).sort({
+          createdAt: "desc",
+        });
+      case "REPTILE":
+        return await AnimalAd.find({ type: "REPTILE" }).sort({
+          createdAt: "desc",
+        });
+      case "OTHER":
+        return await AnimalAd.find({ type: "OTHER" }).sort({
+          createdAt: "desc",
+        });
+      default:
+        throw new Error("Category does not exists");
+    }
+  }
 
-  async getAds(first, after) {
-    const adList = await AnimalAd.find().sort({ createdAt: "desc" });
+  async getAds(userId, category, first, after) {
+    const adList = await this.getLastestFromCategory(
+      category,
+      userId ? await UserService.getUser(userId).address : null
+    );
+
     const allEdges = adList.map((ad) => {
       return {
         node: ad,
@@ -44,8 +85,8 @@ class AdService {
           first,
           null
         ),
-        startCursor: edges[0].cursor,
-        endCursor: edges[edges.length - 1].cursor,
+        startCursor: edges.length > 0 ? edges[0].cursor : null,
+        endCursor: edges.length > 0 ? edges[edges.length - 1].cursor : null,
       },
     };
   }
@@ -87,6 +128,7 @@ class AdService {
   }
 
   async searchAds(filters) {
+    if (!filters) return [];
     let query = {
       $and: [],
     };

@@ -12,9 +12,11 @@ class CloudinaryService {
   }
 
   async uploadUserImage(file, email) {
+    if (typeof file === "string") return file;
+
     const url = await uploadTo(this.cloudinary, await file, {
       unique_filename: false,
-      public_id: `users/${email}/thumbnail`,
+      public_id: `${process.env.NODE_ENV}/users/${email}/thumbnail`,
     });
 
     if (!url) throw new Error("Image could not be upload");
@@ -38,8 +40,13 @@ class CloudinaryService {
     var list = [];
 
     for (let i = 0; i < files.length; ++i) {
+      if (typeof files[i] === "string") {
+        list.push(files[i]);
+        continue;
+      }
+
       const url = await uploadTo(this.cloudinary, await files[i], {
-        public_id: `users/${email}/ads/${index}/${i}`,
+        public_id: `${process.env.NODE_ENV}/users/${email}/ads/${index}/${i}`,
       });
 
       list.push(url);

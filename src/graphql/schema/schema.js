@@ -21,6 +21,20 @@ enum Gravity {
   center
 }
 
+enum Category{
+  PRODUCTS
+  SERVICES
+  SHELTERS
+  DOG
+  CAT
+  BIRD
+  RODENT
+  BUNNY
+  REPTILE
+  OTHER
+  FISH
+}
+
 
 input ImageOptions {
   height: Int
@@ -43,7 +57,7 @@ input ImageOptions {
 
     getCloseShelters(fromAddress: String) : [DistanceData!]
 
-    ads(first: Int!, after: String) : AdConnection!
+    ads(category: Category!, first: Int!, after: String) : AdConnection!
   }
 
   type Mutation{

@@ -1,6 +1,7 @@
 import { AnimalAd, ProductAd, ServiceAd } from "../../models/ad";
 import AdService from "../../services/ad";
 import CloudinaryService from "../../services/cloudinary";
+import util from "util";
 
 module.exports = {
   Ad: {
@@ -29,11 +30,12 @@ module.exports = {
   Dog: {
     photos: async (obj, { options }, context, info) => {
       var list = [];
-      for (var str in obj.photos) {
-        var parts = str.split("users/");
+      for (let i = 0; i < obj.photos.length; i++) {
+        var str = obj.photos[i];
+        var parts = str.split("base/");
         list.push(
           await CloudinaryService.getImage(
-            `users/${parts[parts.length - 1]}`,
+            `base/${parts[parts.length - 1]}`,
             options
           )
         );
@@ -45,10 +47,10 @@ module.exports = {
     photos: async (obj, { options }, context, info) => {
       var list = obj.photos;
       for (var str in list) {
-        var parts = str.split("users/");
+        var parts = str.split("base/");
         list.push(
           await CloudinaryService.getImage(
-            `users/${parts[parts.length - 1]}`,
+            `base/${parts[parts.length - 1]}`,
             options
           )
         );
@@ -60,10 +62,10 @@ module.exports = {
     photos: async (obj, { options }, context, info) => {
       var list = obj.photos;
       for (var str in list) {
-        var parts = str.split("users/");
+        var parts = str.split("base/");
         list.push(
           await CloudinaryService.getImage(
-            `users/${parts[parts.length - 1]}`,
+            `base/${parts[parts.length - 1]}`,
             options
           )
         );
@@ -75,10 +77,10 @@ module.exports = {
     photos: async (obj, { options }, context, info) => {
       var list = obj.photos;
       for (var str in list) {
-        var parts = str.split("users/");
+        var parts = str.split("base/");
         list.push(
           await CloudinaryService.getImage(
-            `users/${parts[parts.length - 1]}`,
+            `base/${parts[parts.length - 1]}`,
             options
           )
         );
@@ -102,9 +104,9 @@ module.exports = {
         throw err;
       }
     },
-    ads: async (_, { first, after }) => {
+    ads: async (_, { category, first, after }, req) => {
       try {
-        return await AdService.getAds(first, after);
+        return await AdService.getAds(req.userId, category, first, after);
       } catch (err) {
         throw err;
       }
