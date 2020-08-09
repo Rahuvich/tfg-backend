@@ -24,7 +24,6 @@ enum Gravity {
 enum Category{
   PRODUCTS
   SERVICES
-  SHELTERS
   DOG
   CAT
   BIRD

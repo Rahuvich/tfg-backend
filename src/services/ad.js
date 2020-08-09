@@ -3,6 +3,7 @@ import UserService from "./user";
 import PaginationService from "./pagination";
 import { escapeRegex } from "../../helpers/regex";
 import CloudinaryService from "./cloudinary";
+import util from "util";
 
 class AdService {
   constructor() {}
@@ -10,9 +11,6 @@ class AdService {
   // * General
   async getLastestFromCategory(category, address) {
     switch (category) {
-      case "SHELTERS":
-        if (!address) return [];
-        return await UserService.getCloseShelters(address);
       case "PRODUCTS":
         return await ProductAd.find().sort({ createdAt: "desc" });
       case "SERVICES":
@@ -47,10 +45,7 @@ class AdService {
   }
 
   async getAds(userId, category, first, after) {
-    const adList = await this.getLastestFromCategory(
-      category,
-      userId ? await UserService.getUser(userId).address : null
-    );
+    const adList = await this.getLastestFromCategory(category);
 
     const allEdges = adList.map((ad) => {
       return {

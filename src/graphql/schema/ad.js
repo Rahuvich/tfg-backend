@@ -207,6 +207,7 @@ type Dog implements AnimalAd & Ad & Node{
     deliveryInfo: [DeliveryStatus!]!
     breed: String
 
+    type: AnimalType!
     size: DogSize!
 
     createdAt: Date!
@@ -232,7 +233,7 @@ type OtherAnimal implements AnimalAd & Ad & Node{
     deliveryInfo: [DeliveryStatus!]!
     breed: String
 
-    type: AnimalType
+    type: AnimalType!
 
     createdAt: Date!
     updatedAt: Date
