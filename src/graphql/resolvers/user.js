@@ -23,9 +23,9 @@ module.exports = {
   Particular: {
     thumbnail: async (obj, { options }, context, info) => {
       var str = obj.thumbnail;
-      var parts = str.split("users/");
+      var parts = str.split("base/");
       return await CloudinaryService.getImage(
-        `users/${parts[parts.length - 1]}`,
+        `base/${parts[parts.length - 1]}`,
         options
       );
     },
@@ -33,9 +33,9 @@ module.exports = {
   Protectora: {
     thumbnail: async (obj, { options }, context, info) => {
       var str = obj.thumbnail;
-      var parts = str.split("users/");
+      var parts = str.split("base/");
       return await CloudinaryService.getImage(
-        `users/${parts[parts.length - 1]}`,
+        `base/${parts[parts.length - 1]}`,
         options
       );
     },
@@ -43,9 +43,9 @@ module.exports = {
   Profesional: {
     thumbnail: async (obj, { options }, context, info) => {
       var str = obj.thumbnail;
-      var parts = str.split("users/");
+      var parts = str.split("base/");
       return await CloudinaryService.getImage(
-        `users/${parts[parts.length - 1]}`,
+        `base/${parts[parts.length - 1]}`,
         options
       );
     },

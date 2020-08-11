@@ -24,14 +24,14 @@ enum Gravity {
 enum Category{
   PRODUCTS
   SERVICES
-  DOG
-  CAT
-  BIRD
-  RODENT
-  BUNNY
-  REPTILE
-  OTHER
-  FISH
+  DOGS
+  CATS
+  BIRDS
+  RODENTS
+  BUNNIES
+  REPTILES
+  OTHERS
+  FISHES
 }
 
 

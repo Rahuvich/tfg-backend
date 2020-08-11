@@ -15,27 +15,31 @@ class AdService {
         return await ProductAd.find().sort({ createdAt: "desc" });
       case "SERVICES":
         return await ServiceAd.find().sort({ createdAt: "desc" });
-      case "DOG":
+      case "DOGS":
         return await AnimalAd.find({ type: "DOG" }).sort({ createdAt: "desc" });
-      case "CAT":
+      case "CATS":
         return await AnimalAd.find({ type: "CAT" }).sort({ createdAt: "desc" });
-      case "BIRD":
+      case "BIRDS":
         return await AnimalAd.find({ type: "BIRD" }).sort({
           createdAt: "desc",
         });
-      case "RODENT":
+      case "RODENTS":
         return await AnimalAd.find({ type: "RODENT" }).sort({
           createdAt: "desc",
         });
-      case "FISH":
+      case "FISHES":
         return await AnimalAd.find({ type: "FISH" }).sort({
           createdAt: "desc",
         });
-      case "REPTILE":
+      case "REPTILES":
         return await AnimalAd.find({ type: "REPTILE" }).sort({
           createdAt: "desc",
         });
-      case "OTHER":
+      case "BUNNIES":
+        return await AnimalAd.find({ type: "BUNNY" }).sort({
+          createdAt: "desc",
+        });
+      case "OTHERS":
         return await AnimalAd.find({ type: "OTHER" }).sort({
           createdAt: "desc",
         });
@@ -63,7 +67,12 @@ class AdService {
     );
 
     return {
-      edges: edges,
+      edges: await Promise.all(
+        await edges.map(async (edge) => {
+          await edge.node.populate("creator").execPopulate();
+          return edge;
+        })
+      ),
       totalCount: edges.length,
       pageInfo: {
         hasNextPage: PaginationService.hasNextPage(
