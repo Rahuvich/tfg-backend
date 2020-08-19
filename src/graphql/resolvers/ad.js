@@ -29,63 +29,22 @@ module.exports = {
   },
   Dog: {
     photos: async (obj, { options }, context, info) => {
-      var list = [];
-      for (let i = 0; i < obj.photos.length; i++) {
-        var str = obj.photos[i];
-        var parts = str.split("base/");
-        list.push(
-          await CloudinaryService.getImage(
-            `base/${parts[parts.length - 1]}`,
-            options
-          )
-        );
-      }
-      return list;
+      return await AdService.resolvePhotos(obj.photos, options);
     },
   },
   OtherAnimal: {
     photos: async (obj, { options }, context, info) => {
-      var list = obj.photos;
-      for (var str in list) {
-        var parts = str.split("base/");
-        list.push(
-          await CloudinaryService.getImage(
-            `base/${parts[parts.length - 1]}`,
-            options
-          )
-        );
-      }
-      return list;
+      return await AdService.resolvePhotos(obj.photos, options);
     },
   },
   ProductAd: {
     photos: async (obj, { options }, context, info) => {
-      var list = obj.photos;
-      for (var str in list) {
-        var parts = str.split("base/");
-        list.push(
-          await CloudinaryService.getImage(
-            `base/${parts[parts.length - 1]}`,
-            options
-          )
-        );
-      }
-      return list;
+      return await AdService.resolvePhotos(obj.photos, options);
     },
   },
   ServiceAd: {
     photos: async (obj, { options }, context, info) => {
-      var list = obj.photos;
-      for (var str in list) {
-        var parts = str.split("base/");
-        list.push(
-          await CloudinaryService.getImage(
-            `base/${parts[parts.length - 1]}`,
-            options
-          )
-        );
-      }
-      return list;
+      return await AdService.resolvePhotos(obj.photos, options);
     },
   },
 

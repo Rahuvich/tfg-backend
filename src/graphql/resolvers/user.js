@@ -23,6 +23,7 @@ module.exports = {
   Particular: {
     thumbnail: async (obj, { options }, context, info) => {
       var str = obj.thumbnail;
+      if (!str) return str;
       var parts = str.split("base/");
       return await CloudinaryService.getImage(
         `base/${parts[parts.length - 1]}`,
@@ -33,6 +34,7 @@ module.exports = {
   Protectora: {
     thumbnail: async (obj, { options }, context, info) => {
       var str = obj.thumbnail;
+      if (!str) return str;
       var parts = str.split("base/");
       return await CloudinaryService.getImage(
         `base/${parts[parts.length - 1]}`,
@@ -43,6 +45,7 @@ module.exports = {
   Profesional: {
     thumbnail: async (obj, { options }, context, info) => {
       var str = obj.thumbnail;
+      if (!str) return str;
       var parts = str.split("base/");
       return await CloudinaryService.getImage(
         `base/${parts[parts.length - 1]}`,
@@ -73,6 +76,16 @@ module.exports = {
       }
       try {
         return await UserService.getUser(req.userId);
+      } catch (err) {
+        throw err;
+      }
+    },
+    savedAds: async (_, context, req) => {
+      if (!req.isAuth) {
+        throw new Error("You must be logged in");
+      }
+      try {
+        return await UserService.getSavedAds(req.userId);
       } catch (err) {
         throw err;
       }

@@ -4,12 +4,25 @@ import PaginationService from "./pagination";
 import { escapeRegex } from "../../helpers/regex";
 import CloudinaryService from "./cloudinary";
 import util from "util";
+const { performance } = require("perf_hooks");
 
 class AdService {
   constructor() {}
 
   // * General
-  async getLastestFromCategory(category, address) {
+  async resolvePhotos(list, options) {
+    return await Promise.all(
+      list.map(async (str) => {
+        var parts = str.split("base/");
+        return await CloudinaryService.getImage(
+          `base/${parts[parts.length - 1]}`,
+          options
+        );
+      })
+    );
+  }
+
+  async getLastestFromCategory(category) {
     switch (category) {
       case "PRODUCTS":
         return await ProductAd.find().sort({ createdAt: "desc" });
@@ -66,13 +79,16 @@ class AdService {
       null
     );
 
-    return {
-      edges: await Promise.all(
-        await edges.map(async (edge) => {
-          await edge.node.populate("creator").execPopulate();
-          return edge;
-        })
-      ),
+    const edgesResulted = await Promise.all(
+      await edges.map(async (edge) => {
+        await edge.node.populate("creator").execPopulate();
+        await edge.node.creator.populate("valuations.author").execPopulate();
+        return edge;
+      })
+    );
+
+    const obj = {
+      edges: edgesResulted,
       totalCount: edges.length,
       pageInfo: {
         hasNextPage: PaginationService.hasNextPage(
@@ -93,6 +109,7 @@ class AdService {
         endCursor: edges.length > 0 ? edges[edges.length - 1].cursor : null,
       },
     };
+    return obj;
   }
 
   async isUserCreatorOfAd(userId, adId) {
@@ -140,6 +157,10 @@ class AdService {
     let obj;
 
     for (const prop in filters) {
+      if (filters[prop] === null) {
+        delete filters[prop];
+        continue;
+      }
       if (filters[prop] instanceof Array) {
         obj = {
           tags: { $in: [] },

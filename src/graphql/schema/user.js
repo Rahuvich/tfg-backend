@@ -24,9 +24,9 @@ enum UserType {
 input UserInput {
     type: UserType!
     name: String!
-    address: String!
-    phone: Int!
-    thumbnail: Upload!
+    address: String
+    phone: Int
+    thumbnail: Upload
     email: String!
     password: String!
     web: String
@@ -54,6 +54,8 @@ type Valuation {
     value: Float!
     comment: String!
     author: User!
+    createdAt: Date!
+    updatedAt: Date
   }
 
   
@@ -63,8 +65,8 @@ type Valuation {
 
     name: String!
     email: String!
-    address: String!
-    phone: Int!
+    address: String
+    phone: Int
     thumbnail(options: ImageOptions): String
     valuations: [Valuation!]
 
@@ -77,8 +79,8 @@ type Valuation {
 
     name: String!
     email: String!
-    address: String!
-    phone: Int!
+    address: String
+    phone: Int
     thumbnail(options: ImageOptions): String
     valuations: [Valuation!]
 
@@ -93,8 +95,8 @@ type Valuation {
     
     name: String!
     email: String!
-    address: String!
-    phone: Int!
+    address: String
+    phone: Int
     thumbnail(options: ImageOptions): String
     valuations: [Valuation!]
 
@@ -109,8 +111,8 @@ type Valuation {
     
     name: String!
     email: String!
-    address: String!
-    phone: Int!
+    address: String
+    phone: Int
     thumbnail(options: ImageOptions): String
     valuations: [Valuation!]
 

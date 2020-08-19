@@ -44,6 +44,14 @@ class UserService {
     return distanceData.sort((a, b) => a.travelTime - b.travelTime);
   }
 
+  async getSavedAds(userId) {
+    const list = await SavedAds.find({ user: userId }).populate("ad");
+
+    return list.map(
+      async (document) => await document.ad.populate("creator").execPopulate()
+    );
+  }
+
   async saveAd(userId, adId) {
     const user = await this.getUser(userId);
     const ad = await AdService.getAd(adId);
@@ -61,11 +69,7 @@ class UserService {
 
     await new SavedAds(data).save();
 
-    const list = await SavedAds.find({ user: user.id }).populate("ad");
-
-    return list.map(
-      async (document) => await document.ad.populate("creator").execPopulate()
-    );
+    return await this.getSavedAds(user.id);
   }
 
   async unsaveAd(userId, adId) {
@@ -74,11 +78,7 @@ class UserService {
       ad: adId,
     });
 
-    const list = await SavedAds.find({ user: userId }).populate("ad");
-
-    return list.map(
-      async (document) => await document.ad.populate("creator").execPopulate()
-    );
+    return await this.getSavedAds(userId);
   }
 
   async getUser(id, prettify = false) {

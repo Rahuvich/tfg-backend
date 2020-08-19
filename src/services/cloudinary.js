@@ -12,7 +12,7 @@ class CloudinaryService {
   }
 
   async uploadUserImage(file, email) {
-    if (typeof file === "string") return file;
+    if (!file || typeof file === "string") return file;
 
     const url = await uploadTo(this.cloudinary, await file, {
       unique_filename: false,
