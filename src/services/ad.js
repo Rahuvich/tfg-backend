@@ -162,13 +162,12 @@ class AdService {
         continue;
       }
       if (filters[prop] instanceof Array) {
-        obj = {
-          tags: { $in: [] },
-        };
+        obj = {};
+        obj[prop] = { $all: [] };
 
         for (let i = 0; i < filters[prop].length; ++i) {
           const regex = new RegExp(escapeRegex(filters[prop][i]), "i");
-          obj.tags.$in.push(regex);
+          obj[prop].$all.push(regex);
         }
       } else if (typeof filters[prop] === "boolean") {
         obj = {};
