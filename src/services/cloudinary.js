@@ -16,7 +16,7 @@ class CloudinaryService {
 
     const url = await uploadTo(this.cloudinary, await file, {
       unique_filename: false,
-      public_id: `${process.env.NODE_ENV}/users/${email}/thumbnail`,
+      public_id: `base/${process.env.NODE_ENV}/users/${email}/thumbnail`,
     });
 
     if (!url) throw new Error("Image could not be upload");
@@ -28,7 +28,12 @@ class CloudinaryService {
   }
 
   async getImage(id, options) {
-    return this.cloudinary.url(id, options);
+    var conf = options;
+    if (!options) {
+      conf = {};
+    }
+    conf.quality = 30;
+    return this.cloudinary.url(id, conf);
   }
 
   async updateAdImages(files, email, index, oldLength) {
@@ -46,7 +51,7 @@ class CloudinaryService {
       }
 
       const url = await uploadTo(this.cloudinary, await files[i], {
-        public_id: `${process.env.NODE_ENV}/users/${email}/ads/${index}/${i}`,
+        public_id: `base/${process.env.NODE_ENV}/users/${email}/ads/${index}/${i}`,
       });
 
       list.push(url);

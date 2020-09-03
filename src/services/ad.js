@@ -185,8 +185,13 @@ class AdService {
     }
 
     const list = await this.findFromAllModels(query);
+
     return await Promise.all(
-      list.map(async (ad) => await ad.populate("creator").execPopulate())
+      list.map(async (ad) => {
+        await ad.populate("creator").execPopulate();
+        await ad.creator.populate("valuations.author").execPopulate();
+        return ad;
+      })
     );
   }
 

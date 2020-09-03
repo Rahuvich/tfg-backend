@@ -28,7 +28,9 @@ class UserService {
         for (var j = 0; j < result.data.rows[i].elements.length; j++) {
           if (result.data.rows[i].elements[j].status === "OK") {
             distanceData.push({
-              protectora: shelters[i + j],
+              protectora: await shelters[i + j]
+                .populate("valuations.author")
+                .execPopulate(),
               distance: result.data.rows[i].elements[j].distance.value,
               travelTime: result.data.rows[i].elements[j].duration.value,
             });
@@ -47,9 +49,11 @@ class UserService {
   async getSavedAds(userId) {
     const list = await SavedAds.find({ user: userId }).populate("ad");
 
-    return list.map(
-      async (document) => await document.ad.populate("creator").execPopulate()
-    );
+    return list.map(async (document) => {
+      await document.ad.populate("creator").execPopulate();
+      await document.ad.creator.populate("valuations.author").execPopulate();
+      return document.ad;
+    });
   }
 
   async saveAd(userId, adId) {
@@ -136,6 +140,11 @@ class UserService {
   }
 
   async updateUser(userId, newData) {
+    // Remove null properties
+    Object.keys(newData).forEach(
+      (key) => newData[key] == null && delete newData[key]
+    );
+
     if (newData.email && (await this.isEmailAlreadyInUse(newData.email))) {
       throw new Error("Email already in use");
     }
@@ -148,6 +157,10 @@ class UserService {
         newData.thumbnail,
         email
       );
+    }
+
+    if (newData.password) {
+      newData.password = await bcrypt.hash(newData.password, 12);
     }
 
     const model = await this.getUserModelById(userId);
