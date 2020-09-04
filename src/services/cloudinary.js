@@ -3,7 +3,6 @@ import { uploadTo, destroyTo } from "../../helpers/image_uploader";
 class CloudinaryService {
   constructor() {
     this.cloudinary = require("cloudinary").v2;
-
     this.cloudinary.config({
       cloud_name: process.env.CLOUD_NAME,
       api_key: process.env.CLOUD_API_KEY,
