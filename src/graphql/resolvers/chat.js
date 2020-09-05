@@ -1,7 +1,7 @@
 import { withFilter } from "apollo-server";
 import ChatService from "../../services/chat";
 
-const CREATE_MESSAGE = "CREATE_MESSAGE";
+const CREATE_MESSAGE = "messageSent";
 
 module.exports = {
   Query: {
@@ -23,16 +23,19 @@ module.exports = {
         throw new Error("You must be logged in");
       }
       try {
-        const msg = await ChatService.createMessage(
+        const room = await ChatService.createMessage(
           req.userId,
           toUser,
           text,
           ad
         );
 
-        await req.pubsub.publish(CREATE_MESSAGE, msg);
+        await req.pubsub.publish(
+          CREATE_MESSAGE,
+          room.messages[room.messages.length - 1]
+        );
 
-        return msg;
+        return room;
       } catch (err) {
         throw err;
       }

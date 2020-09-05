@@ -30,7 +30,23 @@ class ChatService {
       await room.save();
     }
 
-    return message;
+    await room
+      .populate("user1")
+      .populate("user2")
+      .populate("messages")
+      .execPopulate();
+
+    await room.user1.populate("valuations.author").execPopulate();
+    await room.user2.populate("valuations.author").execPopulate();
+    await room.populate("messages.sender messages.ad").execPopulate();
+
+    await Promise.all(
+      room.messages.map(async (message) => {
+        await message.sender.populate("valuations.author").execPopulate();
+        return message;
+      })
+    );
+    return room;
   }
 
   async getUserRooms(userId) {
@@ -38,9 +54,21 @@ class ChatService {
       $or: [{ user1: userId }, { user2: userId }],
     }).populate("user1 user2 messages");
 
-    rooms = rooms.map(
-      async (room) =>
-        await room.populate("messages.sender messenger.ad").execPopulate()
+    rooms = await Promise.all(
+      rooms.map(async (room) => {
+        await room.populate("messages.sender messages.ad").execPopulate();
+        await room.user1.populate("valuations.author").execPopulate();
+        await room.user2.populate("valuations.author").execPopulate();
+
+        await Promise.all(
+          room.messages.map(async (message) => {
+            await message.sender.populate("valuations.author").execPopulate();
+            return message;
+          })
+        );
+
+        return room;
+      })
     );
 
     return rooms;

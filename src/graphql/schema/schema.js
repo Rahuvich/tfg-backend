@@ -83,7 +83,7 @@ input ImageOptions {
     saveAd(id: String!): [Ad!]
     unsaveAd(id: String!): [Ad!]
 
-    createMessage(toUser: String!, text: String!, ad: String) : Message!
+    createMessage(toUser: String!, text: String!, ad: String) : Room!
   }
 `;
 module.exports = typeDefs;
