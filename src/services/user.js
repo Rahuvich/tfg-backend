@@ -11,8 +11,8 @@ class UserService {
   }
 
   async getCloseShelters(fromAddress) {
-    const shelters = (await Protectora.find()).filter(
-      (shelter) => "address" in shelter
+    const shelters = (await Protectora.find()).filter((shelter) =>
+      Object.keys(shelter).includes("address")
     );
 
     const result = await this.mapService.distancematrix({
