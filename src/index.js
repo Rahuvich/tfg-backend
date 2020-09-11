@@ -15,7 +15,6 @@ import { PubSub } from "apollo-server";
 
 // * Subscriptions
 import { createServer } from "http";
-import util from "util";
 
 const app = express();
 const PORT = process.env.PORT || 3030;
