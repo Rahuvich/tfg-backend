@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import AdService from "./ad";
 import { Client, Status } from "@googlemaps/google-maps-services-js";
 import CloudinaryService from "./cloudinary";
+import util from "util";
 
 class UserService {
   constructor() {
@@ -11,9 +12,7 @@ class UserService {
   }
 
   async getCloseShelters(fromAddress) {
-    const shelters = (await Protectora.find()).filter((shelter) =>
-      Object.keys(shelter).includes("address")
-    );
+    const shelters = await Protectora.find({ address: { $exists: true } });
 
     const result = await this.mapService.distancematrix({
       params: {
