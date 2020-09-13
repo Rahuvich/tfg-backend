@@ -14,35 +14,36 @@ class UserService {
   async getCloseShelters(fromAddress) {
     const shelters = await Protectora.find({ address: { $exists: true } });
 
-    const result = await this.mapService.distancematrix({
-      params: {
-        origins: [fromAddress],
-        destinations: shelters.map((protectora) => protectora.address),
-        key: process.env.GOOGLE_API_KEY,
-      },
-    });
-
     var distanceData = [];
+    try {
+      const result = await this.mapService.distancematrix({
+        params: {
+          origins: [fromAddress],
+          destinations: shelters.map((protectora) => protectora.address),
+          key: process.env.GOOGLE_API_KEY,
+        },
+      });
 
-    if (result.data.status === "OK") {
-      for (var i = 0; i < result.data.rows.length; i++) {
-        for (var j = 0; j < result.data.rows[i].elements.length; j++) {
-          if (result.data.rows[i].elements[j].status === "OK") {
-            distanceData.push({
-              protectora: await shelters[i + j]
-                .populate("valuations.author")
-                .execPopulate(),
-              distance: result.data.rows[i].elements[j].distance.value,
-              travelTime: result.data.rows[i].elements[j].duration.value,
-            });
-          } /* else {
-            shelters.splice(i + j, 1);
-          } */
+      if (result.data.status === "OK") {
+        for (var i = 0; i < result.data.rows.length; i++) {
+          for (var j = 0; j < result.data.rows[i].elements.length; j++) {
+            if (result.data.rows[i].elements[j].status === "OK") {
+              distanceData.push({
+                protectora: await shelters[i + j]
+                  .populate("valuations.author")
+                  .execPopulate(),
+                distance: result.data.rows[i].elements[j].distance.value,
+                travelTime: result.data.rows[i].elements[j].duration.value,
+              });
+            } /* else {
+              shelters.splice(i + j, 1);
+            } */
+          }
         }
+      } else {
+        throw new Error("Error thrown by Google API");
       }
-    } else {
-      throw new Error("Error thrown by Google API");
-    }
+    } catch (err) {}
 
     return distanceData.sort((a, b) => a.travelTime - b.travelTime);
   }

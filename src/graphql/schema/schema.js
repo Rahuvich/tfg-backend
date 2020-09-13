@@ -56,7 +56,7 @@ input ImageOptions {
 
     searchAds(filters: AdFilters!) : [Ad!]
 
-    getCloseShelters(fromAddress: String) : [DistanceData!]
+    getCloseShelters(fromAddress: String) : [DistanceData]!
 
     ads(category: Category!, first: Int!, after: String) : AdConnection!
   }
