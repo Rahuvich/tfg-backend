@@ -37,7 +37,7 @@ const server = new ApolloServer({
   },
   subscriptions: {
     onConnect: WebSocketAuth,
-    keepAlive: 10,
+    keepAlive: 10000,
   },
 });
 
