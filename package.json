@@ -5,7 +5,12 @@
   "main": "src/index.js",
   "scripts": {
     "dev": "babel-node src/index.js",
-    "devStart": "nodemon server.js"
+    "devStart": "nodemon server.js",
+    "preinstall": "npx npm-force-resolutions"
+  },
+  "resolutions": {
+    "fs-capacitor": "5.0.0",
+    "graphql-upload": "^11.0.0"
   },
   "author": "",
   "license": "ISC",
