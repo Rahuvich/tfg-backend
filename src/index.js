@@ -54,6 +54,7 @@ httpServer.listen(PORT, "0.0.0.0", () => {
     `Subscriptions ready at ws://localhost:${PORT}${server.subscriptionsPath}`
   );
 });
+
 /* 
 import { fillDB } from "../helpers/fill_db";
 try {
