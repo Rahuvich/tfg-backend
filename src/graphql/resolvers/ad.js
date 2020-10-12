@@ -60,9 +60,9 @@ module.exports = {
         throw err;
       }
     },
-    searchAds: async (_, { filters }) => {
+    searchAds: async (_, { filters }, req) => {
       try {
-        return await AdService.searchAds(filters);
+        return await AdService.searchAds(filters, req.userId);
       } catch (err) {
         throw err;
       }

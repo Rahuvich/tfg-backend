@@ -192,3 +192,5 @@ export const AnimalAd = mongoose.model("animalAd", AnimalAdSchema);
 export const ProductAd = mongoose.model("productAd", ProductAdSchema);
 
 export const ServiceAd = mongoose.model("serviceAd", ServiceAdSchema);
+
+
