@@ -7,6 +7,7 @@ const AdSchema = new Schema(
   {
     tags: { type: [String], required: true, index: true },
     photos: { type: [String], required: true },
+    private: {type: Boolean, required: true, default: true}
   },
   {
     timestamps: true,

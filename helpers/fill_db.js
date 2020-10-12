@@ -53,6 +53,7 @@ casual.define("animalAd", function () {
   ]);
 
   return {
+    private: false,
     type: type,
     tags: casual.array_of_words(7),
     photos: [
@@ -118,6 +119,7 @@ casual.define("animalAd", function () {
 
 casual.define("productAd", function () {
   return {
+    private: false,
     photos: [
       `https://res.cloudinary.com/tfg-petsworld/image/upload/v1596725933/base/mock/users/ads/product-${casual.integer(
         0,
@@ -137,6 +139,7 @@ casual.define("productAd", function () {
 
 casual.define("serviceAd", function () {
   return {
+    private: false,
     photos: [
       `https://res.cloudinary.com/tfg-petsworld/image/upload/v1596725933/base/mock/users/ads/services-${casual.integer(
         0,

@@ -55,9 +55,10 @@ httpServer.listen(PORT, "0.0.0.0", () => {
   );
 });
 
+/* 
+import { fillDB, emptyDB } from "../helpers/fill_db";
+try {
 
-// import { fillDB, emptyDB } from "../helpers/fill_db";
-// try {
-//   emptyDB();
-//   fillDB();
-// } catch (err) {} 
+  fillDB();
+} catch (err) {} 
+ */

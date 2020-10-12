@@ -3,6 +3,7 @@ import UserService from "./user";
 import PaginationService from "./pagination";
 import { escapeRegex } from "../../helpers/regex";
 import CloudinaryService from "./cloudinary";
+import { queryConditionAds } from "../../helpers/private_ads";
 import util from "util";
 const { performance } = require("perf_hooks");
 
