@@ -29,21 +29,25 @@ module.exports = {
   },
   Dog: {
     photos: async (obj, { options }, context, info) => {
+      return obj.photos;
       return await AdService.resolvePhotos(obj.photos, options);
     },
   },
   OtherAnimal: {
     photos: async (obj, { options }, context, info) => {
+      return obj.photos;
       return await AdService.resolvePhotos(obj.photos, options);
     },
   },
   ProductAd: {
     photos: async (obj, { options }, context, info) => {
+      return obj.photos;
       return await AdService.resolvePhotos(obj.photos, options);
     },
   },
   ServiceAd: {
     photos: async (obj, { options }, context, info) => {
+      return obj.photos;
       return await AdService.resolvePhotos(obj.photos, options);
     },
   },
