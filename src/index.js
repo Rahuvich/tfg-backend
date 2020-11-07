@@ -43,7 +43,9 @@ const server = new ApolloServer({
 
 app.use(HttpAuth);
 
-server.applyMiddleware({ app });
+server.applyMiddleware({ app, cors: {
+  origin: '*'
+} });
 
 const httpServer = createServer(app);
 server.installSubscriptionHandlers(httpServer);
