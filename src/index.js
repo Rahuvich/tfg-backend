@@ -28,6 +28,10 @@ const schema = makeExecutableSchema({
 
 const server = new ApolloServer({
   schema,
+  cors: {
+    credentials: true,
+    origin: "*",
+  },
   context: async ({ req, connection }) => {
     if (connection) {
       return { ...connection.context, pubsub };
