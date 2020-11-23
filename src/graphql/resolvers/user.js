@@ -22,7 +22,7 @@ module.exports = {
   },
   Particular: {
     thumbnail: async (obj, { options }, context, info) => {
-      var str = obj.thumbnail;
+      return obj.thumbnail;
       if (!str) return str;
       var parts = str.split("base/");
       return await CloudinaryService.getImage(
@@ -33,7 +33,7 @@ module.exports = {
   },
   Protectora: {
     thumbnail: async (obj, { options }, context, info) => {
-      var str = obj.thumbnail;
+      return obj.thumbnail;
       if (!str) return str;
       var parts = str.split("base/");
       return await CloudinaryService.getImage(
@@ -44,7 +44,7 @@ module.exports = {
   },
   Profesional: {
     thumbnail: async (obj, { options }, context, info) => {
-      var str = obj.thumbnail;
+      return obj.thumbnail;
       if (!str) return str;
       var parts = str.split("base/");
       return await CloudinaryService.getImage(

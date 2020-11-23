@@ -3,6 +3,7 @@ import UserService from "./user";
 import PaginationService from "./pagination";
 import { escapeRegex } from "../../helpers/regex";
 import CloudinaryService from "./cloudinary";
+import { privateAdsOnly } from "../../helpers/private_ads";
 import util from "util";
 const { performance } = require("perf_hooks");
 
@@ -22,38 +23,38 @@ class AdService {
     );
   }
 
-  async getLastestFromCategory(category) {
+  async getLastestFromCategory(category, userId) {
     switch (category) {
       case "PRODUCTS":
-        return await ProductAd.find().sort({ createdAt: "desc" });
+        return await ProductAd.find(privateAdsOnly(undefined, userId)).sort({ createdAt: "desc" });
       case "SERVICES":
-        return await ServiceAd.find().sort({ createdAt: "desc" });
+        return await ServiceAd.find(privateAdsOnly(undefined, userId)).sort({ createdAt: "desc" });
       case "DOGS":
-        return await AnimalAd.find({ type: "DOG" }).sort({ createdAt: "desc" });
+        return await AnimalAd.find(privateAdsOnly({ type: "DOG" }, userId)).sort({ createdAt: "desc" });
       case "CATS":
-        return await AnimalAd.find({ type: "CAT" }).sort({ createdAt: "desc" });
+        return await AnimalAd.find(privateAdsOnly({ type: "CAT" }, userId)).sort({ createdAt: "desc" });
       case "BIRDS":
-        return await AnimalAd.find({ type: "BIRD" }).sort({
+        return await AnimalAd.find(privateAdsOnly({ type: "BIRD" }, userId)).sort({
           createdAt: "desc",
         });
       case "RODENTS":
-        return await AnimalAd.find({ type: "RODENT" }).sort({
+        return await AnimalAd.find(privateAdsOnly({ type: "RODENT" }, userId)).sort({
           createdAt: "desc",
         });
       case "FISHES":
-        return await AnimalAd.find({ type: "FISH" }).sort({
+        return await AnimalAd.find(privateAdsOnly({ type: "FISH" }, userId)).sort({
           createdAt: "desc",
         });
       case "REPTILES":
-        return await AnimalAd.find({ type: "REPTILE" }).sort({
+        return await AnimalAd.find(privateAdsOnly({ type: "REPTILE" }, userId)).sort({
           createdAt: "desc",
         });
       case "BUNNIES":
-        return await AnimalAd.find({ type: "BUNNY" }).sort({
+        return await AnimalAd.find(privateAdsOnly({ type: "BUNNY" }, userId)).sort({
           createdAt: "desc",
         });
       case "OTHERS":
-        return await AnimalAd.find({ type: "OTHER" }).sort({
+        return await AnimalAd.find(privateAdsOnly({ type: "OTHER" }, userId)).sort({
           createdAt: "desc",
         });
       default:
@@ -62,7 +63,7 @@ class AdService {
   }
 
   async getAds(userId, category, first, after) {
-    const adList = await this.getLastestFromCategory(category);
+    const adList = await this.getLastestFromCategory(category, userId);
 
     const allEdges = adList.map((ad) => {
       return {
@@ -140,15 +141,15 @@ class AdService {
     throw new Error("Ad does not exist");
   }
 
-  async findFromAllModels(args) {
-    const animalList = await AnimalAd.find(args);
-    const productList = await ProductAd.find(args);
-    const serviceList = await ServiceAd.find(args);
+  async findFromAllModels(args, userId) {
+    const animalList = await AnimalAd.find(privateAdsOnly(args, userId));
+    const productList = await ProductAd.find(privateAdsOnly(args, userId));
+    const serviceList = await ServiceAd.find(privateAdsOnly(args, userId));
 
     return animalList.concat(productList).concat(serviceList);
   }
 
-  async searchAds(filters) {
+  async searchAds(filters, userId) {
     if (!filters) return [];
     let query = {
       $and: [],
@@ -184,7 +185,7 @@ class AdService {
       query.$and.push(obj);
     }
 
-    const list = await this.findFromAllModels(query);
+    const list = await this.findFromAllModels(query, userId);
 
     return await Promise.all(
       list.map(async (ad) => {
@@ -196,7 +197,7 @@ class AdService {
   }
 
   async getIndexAdFromUser(userId, adId) {
-    const ads = await this.searchAds({ creator: userId });
+    const ads = await this.searchAds({ creator: userId }, userId);
 
     const orderedList = ads.sort((ad, ad2) => ad.createdAt < ad2.createdAt);
 

@@ -42,6 +42,12 @@ input ImageOptions {
   gravity: Gravity
 }
 
+type InfoApp {
+  title: String!
+  msg: String!
+  url: String
+}
+
 
   type Query {
     login(email: String!, password: String!): AuthData!
@@ -57,6 +63,8 @@ input ImageOptions {
     searchAds(filters: AdFilters!) : [Ad!]
 
     getCloseShelters(fromAddress: String) : [DistanceData]!
+
+    info : [InfoApp]!
 
     ads(category: Category!, first: Int!, after: String) : AdConnection!
   }

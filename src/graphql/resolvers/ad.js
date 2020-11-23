@@ -29,21 +29,25 @@ module.exports = {
   },
   Dog: {
     photos: async (obj, { options }, context, info) => {
+      return obj.photos;
       return await AdService.resolvePhotos(obj.photos, options);
     },
   },
   OtherAnimal: {
     photos: async (obj, { options }, context, info) => {
+      return obj.photos;
       return await AdService.resolvePhotos(obj.photos, options);
     },
   },
   ProductAd: {
     photos: async (obj, { options }, context, info) => {
+      return obj.photos;
       return await AdService.resolvePhotos(obj.photos, options);
     },
   },
   ServiceAd: {
     photos: async (obj, { options }, context, info) => {
+      return obj.photos;
       return await AdService.resolvePhotos(obj.photos, options);
     },
   },
@@ -56,9 +60,9 @@ module.exports = {
         throw err;
       }
     },
-    searchAds: async (_, { filters }) => {
+    searchAds: async (_, { filters }, req) => {
       try {
-        return await AdService.searchAds(filters);
+        return await AdService.searchAds(filters, req.userId);
       } catch (err) {
         throw err;
       }

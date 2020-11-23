@@ -41,13 +41,13 @@ const server = new ApolloServer({
   },
   subscriptions: {
     onConnect: WebSocketAuth,
-    keepAlive: 10,
+    keepAlive: 10000,
   },
 });
 
 app.use(HttpAuth);
 
-server.applyMiddleware({ app });
+server.applyMiddleware({ app, cors: false });
 
 const httpServer = createServer(app);
 server.installSubscriptionHandlers(httpServer);
@@ -58,8 +58,11 @@ httpServer.listen(PORT, "0.0.0.0", () => {
     `Subscriptions ready at ws://localhost:${PORT}${server.subscriptionsPath}`
   );
 });
+
 /* 
-import { fillDB } from "../helpers/fill_db";
+import { fillDB, emptyDB } from "../helpers/fill_db";
 try {
+
   fillDB();
-} catch (err) {} */
+} catch (err) {} 
+ */

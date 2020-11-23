@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 
 class Connection {
   constructor() {
+// mongodb+srv://<username>:<password>@tfg-cluster.femwl.mongodb.net/test
+
     const uri = `mongodb+srv://tfg-cluster.femwl.mongodb.net/?retryWrites=true&w=majority&authSource=admin`;
 
     console.log(`URI: ${uri}`);
